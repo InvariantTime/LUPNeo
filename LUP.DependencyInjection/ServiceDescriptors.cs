@@ -10,7 +10,13 @@ namespace LUP.DependencyInjection
 	{
 		public LifeTimes LifeTime { get; init; }
 
-		public virtual required Type Type { get; init; }
+		public Type Type { get; init; }
+
+		public ServiceDescriptor(LifeTimes lifeTime, Type type)
+		{
+			LifeTime = lifeTime;
+			Type = type ?? throw new ArgumentNullException(nameof(type));
+		}
 	}
 
 
@@ -18,10 +24,8 @@ namespace LUP.DependencyInjection
 	{
 		public object Instance { get; }
 
-		public SingletonServiceDescriptor(Type type, object instance)
+		public SingletonServiceDescriptor(Type type, object instance) : base(LifeTimes.Singleton, type)
 		{
-			LifeTime = LifeTimes.Singleton;
-			Type = type ?? throw new ArgumentNullException(nameof(type));
 			Instance = instance ?? throw new ArgumentNullException(nameof(instance));
 
 			if (type.IsAssignableFrom(Instance.GetType()) == false)
@@ -34,7 +38,7 @@ namespace LUP.DependencyInjection
 	{
 		public Func<object> Factory { get; }
 
-		public FactoryServiceDescriptor(Func<object> factory, Type type, LifeTimes lifeTime)
+		public FactoryServiceDescriptor(Func<object> factory, Type type, LifeTimes lifeTime) : base(lifeTime, type)
 		{
 			Factory = factory;
 		}
@@ -45,10 +49,8 @@ namespace LUP.DependencyInjection
 	{
 		public Type Implementation { get; }
 
-		public DynamicServiceDescriptor(LifeTimes lifeTime, Type type, Type implementation)
-		{
-			LifeTime = lifeTime;
-			Type = type ?? throw new ArgumentNullException(nameof(type));
+		public DynamicServiceDescriptor(LifeTimes lifeTime, Type type, Type implementation) : base(lifeTime, type)
+		{	
 			Implementation = implementation ?? throw new ArgumentNullException(nameof(implementation));
 		}
 	}
