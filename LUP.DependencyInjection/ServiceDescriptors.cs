@@ -45,9 +45,11 @@ namespace LUP.DependencyInjection
 	{
 		public Type Implementation { get; }
 
-		public DynamicServiceDescriptor()
+		public DynamicServiceDescriptor(LifeTimes lifeTime, Type type, Type implementation)
 		{
-
+			LifeTime = lifeTime;
+			Type = type ?? throw new ArgumentNullException(nameof(type));
+			Implementation = implementation ?? throw new ArgumentNullException(nameof(implementation));
 		}
 	}
 }

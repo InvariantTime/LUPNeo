@@ -2,6 +2,6 @@
 {
 	public interface IServiceCollection
 	{
-		void Add(ServiceDescriptors descriptor);
+		void Add(ServiceDescriptor descriptor);
 	}
 }
