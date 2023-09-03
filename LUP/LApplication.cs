@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LUP.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,19 @@ namespace LUP
 	{
 		public static LApplication? Current { get; private set; }
 
-		internal LApplication()
+		public IServicesProvider Services { get; private set; }
+		
+
+		internal LApplication(IServiceCollection services)
 		{
+			Services = services.BuildProvider();
+			Current = this;
+		}
+
+
+		public void AddUpdateModule()
+		{
+
 		}
 
 		

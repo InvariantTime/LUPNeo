@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace LUP.DependencyInjection
 {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-	public class ServiceConfigureAttribute : Attribute
-	{
-	}
+    public class ServiceActivator
+    {
+    }
 }

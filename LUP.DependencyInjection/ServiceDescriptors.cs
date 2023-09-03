@@ -36,9 +36,13 @@ namespace LUP.DependencyInjection
 
 	public class FactoryServiceDescriptor : ServiceDescriptor
 	{
-		public Func<object> Factory { get; }
+		public Func<IServiceScope, object> Factory { get; }
 
+<<<<<<< HEAD
+		public FactoryServiceDescriptor(Func<IServiceScope, object> factory, Type type, LifeTimes lifeTime) : base(lifeTime, type)
+=======
 		public FactoryServiceDescriptor(Func<object> factory, Type type, LifeTimes lifeTime) : base(lifeTime, type)
+>>>>>>> 2c7bf82a9dda440f590ac97326dcf4a76f460968
 		{
 			Factory = factory;
 		}

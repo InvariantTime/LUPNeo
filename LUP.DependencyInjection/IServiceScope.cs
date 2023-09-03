@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace LUP.DependencyInjection
 {
-	public interface IServicesProvider : IDisposable
-	{
-		IServiceScope CreateScope();
-
-		object? GetService(Type type);
-	}
+    public interface IServiceScope : IDisposable
+    {
+        IServicesProvider Services { get; }
+    }
 }
