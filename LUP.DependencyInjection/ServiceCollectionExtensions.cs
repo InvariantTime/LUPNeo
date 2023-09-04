@@ -43,7 +43,6 @@ namespace LUP.DependencyInjection
 		
 		public static IServiceCollection AddSingleton<TServ, TImpl>(this IServiceCollection collection, TImpl instance) where TImpl : TServ
 		{
-<<<<<<< HEAD
 			collection.Add(new SingletonServiceDescriptor(typeof(TServ), instance!));
 			return collection;
 		}
@@ -56,13 +55,5 @@ namespace LUP.DependencyInjection
 
 			return new ServiceProvider(collection);
 		}
-=======
-			if (instance == null)
-				throw new ArgumentNullException(nameof(instance));
-
-			collection.Add(new SingletonServiceDescriptor(typeof(TServ), instance));
-			return collection;
-		}
->>>>>>> 2c7bf82a9dda440f590ac97326dcf4a76f460968
 	}
 }

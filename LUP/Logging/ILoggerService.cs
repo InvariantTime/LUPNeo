@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LUP.Logging
 {
-    public interface ILogger
+    public interface ILoggerService
     {
-        void Message(string message, LogLevel level, Exception? exception = null);
+        void Message(LogMessage message);
     }
 }

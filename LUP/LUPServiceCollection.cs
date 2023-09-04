@@ -1,4 +1,5 @@
 ﻿using LUP.DependencyInjection;
+using LUP.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace LUP
 			descriptors = new HashSet<ServiceDescriptor>();
 
 			//Init default services
-
+			this.AddSingleton<ILogger, Logger>();
+			this.AddSingleton<ILoggerService, ConsoleLoggerService>();
 		}
 
 
