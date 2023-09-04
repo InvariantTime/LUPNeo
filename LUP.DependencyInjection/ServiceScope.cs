@@ -1,7 +1,9 @@
-﻿using System;
+﻿using LUP.DependencyInjection.CallSites;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace LUP.DependencyInjection
 
         public IServicesProvider Services => this;
 
-        public ConcurrentDictionary<ServiceDescriptor, object?> ActivatedServices { get; }
+        public ConcurrentDictionary<InstanceCallsite, object?> ActivatedServices { get; }
 
         public ServiceScope(ServiceProvider root)
         {

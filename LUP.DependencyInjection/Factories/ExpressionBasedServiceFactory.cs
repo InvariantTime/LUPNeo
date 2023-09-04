@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LUP.DependencyInjection.CallSites;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,20 @@ namespace LUP.DependencyInjection.Factories
 
         private readonly ConcurrentDictionary<Type, Func<IServiceScope, object?>> builders = new();
 
-        public object? CreateService(ServiceDescriptor descriptor, IServiceScope scope)
+        public object? CreateService(InstanceCallsite? callsite, IServiceScope scope)
         {
-            if (descriptor is SingletonServiceDescriptor ssd)
-                return ssd.Instance;
+            if (callsite == null)
+                return null;
 
-            if (descriptor is FactoryServiceDescriptor fsd)
-                return fsd.Factory;
+            if (callsite.Value != null)
+                return callsite.Value;
 
-            if (descriptor is DynamicServiceDescriptor dsd)
+            if (callsite.Func != null)
+                return callsite.Func.Invoke(scope);
+
+            if (callsite.Implementation != null)
             {
-                var builder = builders.GetOrAdd(dsd.Implementation, CreateBuilder);
+                var builder = builders.GetOrAdd(callsite.Implementation, CreateBuilder);
                 return builder.Invoke(scope);
             }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LUP.DependencyInjection.CallSites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace LUP.DependencyInjection.Factories
 {
     public interface IServiceFactory
     {
-        object? CreateService(ServiceDescriptor descriptor, IServiceScope scope);
+        object? CreateService(InstanceCallsite callsite, IServiceScope scope);
     }
 }

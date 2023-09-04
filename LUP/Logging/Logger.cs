@@ -1,31 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LUP.Logging
 {
-    public class Logger<T> : ILogger
+    public class Logger : ILogger
     {
-        private readonly IEnumerable<ILoggerService> services;
+        private readonly ImmutableList<ILoggerService> services;
         private readonly string name;
 
-        public Logger(IEnumerable<ILoggerService> service)
+        public Logger(IEnumerable<ILoggerService> services)
         {
-            name = ;
+            this.services = services.ToImmutableList();
+            name = "Name";
         }
 
 
         public void Message(string message, LogLevel level, Exception? exception = null)
         {
-            service.Message(new LogMessage
+            services.ForEach(service =>
             {
-                Exception = exception,
-                Level = level,
-                Message = message,
-                Source = name,
-                Time = DateTime.Now
+                service.Message(new LogMessage
+                {
+                    Exception = exception,
+                    Level = level,
+                    Message = message,
+                    Source = name,
+                    Time = DateTime.Now
+                });
             });
         }
     }

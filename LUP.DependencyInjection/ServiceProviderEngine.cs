@@ -1,4 +1,5 @@
-﻿using LUP.DependencyInjection.Factories;
+﻿using LUP.DependencyInjection.CallSites;
+using LUP.DependencyInjection.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,32 +29,56 @@ namespace LUP.DependencyInjection
         }
 
 
-        internal Func<ServiceScope, object?> CreateActivator(ServiceDescriptor descriptor)
+        internal Func<ServiceScope, object?> CreateActivator(Callsite callsite)
         {
-            return descriptor.LifeTime switch
+            if (callsite is InstanceCallsite ics)
+                return CreateInstanceActivator(ics);
+
+            if (callsite is EnumerableCallsite ecs)
+                return CreateEnumerableActivator(ecs);
+
+            if (callsite is GenericCallsite gcs)
+                return CreateGenericActivator(gcs);
+
+            return _ => null;
+        }
+
+
+        private Func<ServiceScope, object?> CreateInstanceActivator(InstanceCallsite callsite)
+        {
+            if (callsite.LifeTime == LifeTimes.Transient)
+                return scope => Factory.CreateService(callsite, scope);
+            
+            if (callsite.LifeTime == LifeTimes.Scope)
             {
-                LifeTimes.Transient => CreateTransientActivator(descriptor),
+                return scope =>
+                {
+                    var value = scope.ActivatedServices.GetOrAdd(callsite, x => Factory.CreateService(callsite, scope));
+                    return value;
+                };
+            }
 
-                LifeTimes.Scope | LifeTimes.Singleton => CreateScopedActivator(descriptor),
-
-                _ => (_ => null)
-            };
+            return _ => null;
         }
 
 
-        private Func<ServiceScope, object?> CreateTransientActivator(ServiceDescriptor descriptor)
-        {
-            return scope => Factory.CreateService(descriptor, scope);
-        }
-
-
-        private Func<ServiceScope, object?> CreateScopedActivator(ServiceDescriptor descriptor)
+        private static Func<ServiceScope, object?> CreateEnumerableActivator(EnumerableCallsite callsite)
         {
             return scope =>
             {
-                var result = scope.ActivatedServices.GetOrAdd(descriptor, d => Factory.CreateService(d, scope));
-                return result;
+                var array = Array.CreateInstance(callsite.GenericAlias, callsite.Callsites.Length);
+
+                for (int i = 0; i < array.Length; i++)
+                    array.SetValue(scope.GetService(callsite.Callsites[i].Alias), i);
+
+                return array;
             };
+        }
+
+
+        private Func<ServiceScope, object?> CreateGenericActivator(GenericCallsite callsite)
+        {
+            throw new ArgumentException();
         }
     }
 }

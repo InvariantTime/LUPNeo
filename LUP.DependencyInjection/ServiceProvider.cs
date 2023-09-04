@@ -1,4 +1,5 @@
-﻿using LUP.DependencyInjection.Factories;
+﻿using LUP.DependencyInjection.CallSites;
+using LUP.DependencyInjection.Factories;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -10,15 +11,15 @@ namespace LUP.DependencyInjection
 {
     public class ServiceProvider : IServicesProvider
     {
-        private readonly ConcurrentDictionary<ServiceDescriptor, Func<ServiceScope, object?>> activators;
-        private readonly ImmutableList<ServiceDescriptor> descriptors;
+        private readonly ConcurrentDictionary<Type, Func<ServiceScope, object?>> activators;
         private readonly ServiceProviderEngine engine;
+        private readonly ICallsiteFactory callsiteFactory;
         private readonly ServiceScope root;
 
 
         internal ServiceProvider(IEnumerable<ServiceDescriptor> descriptors)
         {
-            this.descriptors = descriptors.ToImmutableList();
+            callsiteFactory = new CallsiteFactory(descriptors);
             root = new(this);
             activators = new();
             engine = ServiceProviderEngine.Instance;
@@ -36,29 +37,30 @@ namespace LUP.DependencyInjection
 
         internal object? GetService(Type serviceType, ServiceScope scope)
         {
-            var descriptor = descriptors.Find(x => x.Type == serviceType);
-
-            if (descriptor == null)
-                return null;
-
-            var activator = activators.GetOrAdd(descriptor, CreateActivator);
+            var activator = activators.GetOrAdd(serviceType, CreateActivator);
 
             return activator.Invoke(scope);
         }
 
 
-        private Func<ServiceScope, object?> CreateActivator(ServiceDescriptor descriptor)
+        private Func<ServiceScope, object?> CreateActivator(Type serviceType)
         {
-            if (descriptor.LifeTime == LifeTimes.Singleton)
+            var callsite = callsiteFactory.GetCallsite(serviceType);
+
+            if (callsite == null)
+                return _ => null;
+
+            if (callsite is InstanceCallsite { LifeTime: LifeTimes.Singleton } ics)
             {
-                var result = engine.Factory.CreateService(descriptor, root);
-                return _ => result;
+                var value = engine.Factory.CreateService(ics, root);
+                return _ => value;
             }
 
-            return engine.CreateActivator(descriptor);
+            return engine.CreateActivator(callsite);
         }
 
 
+        //TODO: dispose service provider
         public void Dispose()
         {
 

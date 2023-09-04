@@ -81,7 +81,28 @@ namespace DependencyInjectionTests
             var service1 = scope.Services.GetService(typeof(IEnumerable<int>));
             var service2 = (SomeClass)scope.Services.GetService(typeof(SomeClass))!;
 
-            Assert.AreNotEqual(service1, service2.Ints, "services must be equal");
+            Assert.AreNotEqual(service1, service2.Ints, "services cannot be equal");
+        }
+
+
+        [TestMethod]
+        public void Enumerable_Services_Test()
+        {
+            EmptyServiceCollection collection = new();
+            var provider = collection.AddTransient<IEnumerable<int>, List<int>>()
+                .AddScoped<SomeScene, SomeScene>()
+                .AddScoped<IService, Service1>()
+                .AddScoped<IService, Service2>()
+                .AddScoped<IService, Service3>()
+                .BuildProvider();
+
+            var scope = provider.CreateScope();
+
+            var service2 = scope.Services.GetService<SomeScene>()!;
+
+            int count = 3;
+
+            Assert.AreEqual(service2.Classes.Count(), count);
         }
 
 
@@ -94,5 +115,25 @@ namespace DependencyInjectionTests
                 Ints = ints;
             }
         }
+
+
+        class SomeScene
+        {
+            public IEnumerable<IService> Classes { get; }
+
+            public SomeScene(IEnumerable<IService> classes)
+            {
+                Classes = classes;
+            }
+        }
+
+
+        interface IService { }
+
+        class Service1 : IService { }
+
+        class Service2 : IService { }
+
+        class Service3 : IService { }
     }
 }
