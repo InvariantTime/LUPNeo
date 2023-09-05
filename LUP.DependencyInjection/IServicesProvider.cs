@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LUP.DependencyInjection
 {
-	public interface IServicesProvider : IDisposable
+	public interface IServicesProvider : IDisposable, IAsyncDisposable
 	{
 		IServiceScope CreateScope();
 

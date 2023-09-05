@@ -66,7 +66,7 @@ namespace LUP.DependencyInjection
         }
 
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await root.DisposeAsync();
         }
