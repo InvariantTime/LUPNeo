@@ -40,9 +40,13 @@ namespace LUP.DependencyInjection.CallSites
             {
                 if (typeof(IEnumerable<>) == type.GetGenericTypeDefinition())
                 {
-
                     if (descriptor == null)
                         return BuildEnumerableCallsite(type);
+                }
+
+                if (TryFindDefinitionFor(type, out var res) == true)
+                {
+                    return BuildGenericCallsite(type, res!);
                 }
             }
 
@@ -109,9 +113,37 @@ namespace LUP.DependencyInjection.CallSites
         }
 
 
+        private InstanceCallsite? BuildGenericCallsite(Type generic, ServiceDescriptor descriptor)
+        {
+            if (descriptor is DynamicServiceDescriptor dsd)
+            {
+                return new InstanceCallsite
+                { 
+                    Alias = dsd.Type,
+                    LifeTime = dsd.LifeTime,
+                    Implementation = dsd.Implementation.MakeGenericType(generic.GetGenericArguments())
+                };
+            }
+
+            return null;
+        }
+
+
         private Callsite? GetCallsiteByDescriptor(ServiceDescriptor descriptor)
         {
             return GetCallsite(descriptor.Type);
+        }
+
+
+        private bool TryFindDefinitionFor(Type type, out ServiceDescriptor? result)
+        {
+            result = null;
+
+            if (type.IsGenericType == false)
+                return false;
+
+            result = descriptors.Find(x => x.Type == type.GetGenericTypeDefinition());
+            return result != null;
         }
     }
 }

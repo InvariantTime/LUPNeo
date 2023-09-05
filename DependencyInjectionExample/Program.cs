@@ -1,59 +1,32 @@
 ﻿using LUP.DependencyInjection;
 using System.Collections;
 
-var builder = new ServiceCollection();
+var builder = new EmptyServiceCollection();
 
-builder.AddSingleton<ILogger, Logger>();
-builder.AddSingleton<ILogger, Logger>();
-builder.AddScoped<Component, Component>();
+builder.AddScoped<SomeClass, SomeClass>()
+    .AddScoped(typeof(SomeGeneric<>), typeof(SomeGeneric<>));
 
 var services = builder.BuildProvider();
+var scope = services.CreateScope();
 
-var logger = services.GetService(typeof(ILogger));
+var generic = scope.GetService<SomeGeneric<int>>();
+var some = scope.GetService<SomeClass>();
 
 Console.WriteLine();
 
-interface ILogger
+
+class SomeGeneric<T>
 {
 
 }
 
 
-class Logger : ILogger
+class SomeClass
 {
+    public SomeGeneric<int> Generic { get; }
 
-}
-
-
-class Component
-{
-    public readonly ILogger logger;
-
-    public Component(ILogger logger)
+    public SomeClass(SomeGeneric<int> generic)
     {
-        this.logger = logger;
-    }
-}
-
-
-class ServiceCollection : IServiceCollection
-{
-    private readonly HashSet<ServiceDescriptor> descriptors = new();
-
-    public void Add(ServiceDescriptor descriptor)
-    {
-        descriptors.Add(descriptor);
-    }
-
-
-    public IEnumerator<ServiceDescriptor> GetEnumerator()
-    {
-        return descriptors.GetEnumerator();
-    }
-
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
+        Generic = generic;
     }
 }

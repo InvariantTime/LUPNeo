@@ -1,13 +1,13 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LUP.DependencyInjection;
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run<DIBenchmark>();
+BenchmarkDotNet.Running.BenchmarkRunner.Run<DiBenchmark>();
 
-public class DIBenchmark
+public class DiBenchmark
 {
     private readonly IServicesProvider services;
 
-    public DIBenchmark()
+    public DiBenchmark()
     {
         var builder = new EmptyServiceCollection();
         services = builder.AddSingleton<ISome1, Some1>()

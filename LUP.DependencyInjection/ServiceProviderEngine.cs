@@ -10,7 +10,7 @@ namespace LUP.DependencyInjection
 {
     public class ServiceProviderEngine
     {
-        public static readonly ServiceProviderEngine Instance = new ServiceProviderEngine();
+        public static readonly ServiceProviderEngine Instance = new();
 
         public IServiceFactory Factory { get; private set; }
 
@@ -36,9 +36,6 @@ namespace LUP.DependencyInjection
 
             if (callsite is EnumerableCallsite ecs)
                 return CreateEnumerableActivator(ecs);
-
-            if (callsite is GenericCallsite gcs)
-                return CreateGenericActivator(gcs);
 
             return _ => null;
         }
@@ -73,12 +70,6 @@ namespace LUP.DependencyInjection
 
                 return array;
             };
-        }
-
-
-        private Func<ServiceScope, object?> CreateGenericActivator(GenericCallsite callsite)
-        {
-            throw new ArgumentException();
         }
     }
 }
