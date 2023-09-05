@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LUP.DependencyInjection
 {
-    public class ServiceProvider : IServicesProvider
+    public class ServiceProvider : IServicesProvider, IAsyncDisposable
     {
         private readonly ConcurrentDictionary<Type, Func<ServiceScope, object?>> activators;
         private readonly ServiceProviderEngine engine;
@@ -60,10 +60,15 @@ namespace LUP.DependencyInjection
         }
 
 
-        //TODO: dispose service provider
         public void Dispose()
         {
+            root.Dispose();
+        }
 
+
+        public async Task DisposeAsync()
+        {
+            await root.DisposeAsync();
         }
     }
 }

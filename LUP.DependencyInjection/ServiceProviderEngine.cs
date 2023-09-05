@@ -50,7 +50,7 @@ namespace LUP.DependencyInjection
             {
                 return scope =>
                 {
-                    var value = scope.ActivatedServices.GetOrAdd(callsite, x => Factory.CreateService(callsite, scope));
+                    var value = scope.GetOrAddService(callsite, x => Factory.CreateService(callsite, scope));
                     return value;
                 };
             }
