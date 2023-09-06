@@ -66,7 +66,7 @@ namespace LUP.DependencyInjection
                 var array = Array.CreateInstance(callsite.GenericAlias, callsite.Callsites.Length);
 
                 for (int i = 0; i < array.Length; i++)
-                    array.SetValue(scope.GetService(callsite.Callsites[i].Alias), i);
+                    array.SetValue(scope.GetService(callsite.Callsites[i]), i);
 
                 return array;
             };

@@ -103,6 +103,7 @@ namespace DependencyInjectionTests
             int count = 3;
 
             Assert.AreEqual(service2.Classes.Count(), count);
+            Assert.AreNotEqual(service2.Classes.ElementAt(0), service2.Classes.ElementAt(1));
         }
 
 

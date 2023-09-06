@@ -39,6 +39,12 @@ namespace LUP.DependencyInjection
         }
 
 
+        internal object? GetService(Callsite callsite)
+        {
+            return root.GetService(this, callsite);
+        }
+
+
         public IServiceScope CreateScope()
         {
             if (isDisposed == true)
@@ -58,6 +64,7 @@ namespace LUP.DependencyInjection
             if (result == false)
             {
                 service = func.Invoke(callsite);
+                activatedServices.TryAdd(callsite, service);
 
                 if (service != null)
                     disposables.Push(service);

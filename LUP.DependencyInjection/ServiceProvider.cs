@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LUP.DependencyInjection
 {
-    public class ServiceProvider : IServicesProvider, IAsyncDisposable
+    public class ServiceProvider : IServicesProvider
     {
         private readonly ConcurrentDictionary<Type, Func<ServiceScope, object?>> activators;
         private readonly ServiceProviderEngine engine;
@@ -43,10 +43,22 @@ namespace LUP.DependencyInjection
         }
 
 
+        internal object? GetService(ServiceScope scope, Callsite callsite)
+        {
+            var activator = CreateActivatorByCallsite(callsite);
+            return activator?.Invoke(scope);
+        }
+
+
         private Func<ServiceScope, object?> CreateActivator(Type serviceType)
         {
             var callsite = callsiteFactory.GetCallsite(serviceType);
+            return CreateActivatorByCallsite(callsite);  
+        }
 
+
+        private Func<ServiceScope, object?> CreateActivatorByCallsite(Callsite? callsite)
+        {
             if (callsite == null)
                 return _ => null;
 
@@ -60,15 +72,15 @@ namespace LUP.DependencyInjection
         }
 
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             root.Dispose();
         }
 
 
-        public async ValueTask DisposeAsync()
+        ValueTask IAsyncDisposable.DisposeAsync()
         {
-            await root.DisposeAsync();
+            return root.DisposeAsync();
         }
     }
 }

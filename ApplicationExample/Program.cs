@@ -1,7 +1,10 @@
 ﻿using LUP;
+using LUP.DependencyInjection;
 using LUP.Logging;
 
 var builder = new ApplicationBuilder();
+
+builder.Services.AddSingleton<ILoggerService, FatalErrorThrower>();
 
 var app = builder.Build();
 app.Run();
@@ -23,6 +26,15 @@ class SomeObject : LUPObject
 {
     public SomeObject()
     {
+        Logger.Info("Create new some object");
+    }
+}
 
+
+class FatalErrorThrower : ILoggerService
+{
+    public void Message(LogMessage message)
+    {
+        Console.WriteLine("ОШИБКА");
     }
 }

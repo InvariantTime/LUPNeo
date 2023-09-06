@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjectionExample"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjectionTests", "DependencyInjectionTests\DependencyInjectionTests.csproj", "{624526CB-F84F-401B-A078-EF13A4D512B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationExample", "ApplicationExample\ApplicationExample.csproj", "{A91DFC1C-6972-4EC1-931A-14BE58CB487F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationExample", "ApplicationExample\ApplicationExample.csproj", "{A91DFC1C-6972-4EC1-931A-14BE58CB487F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LUP.SceneGraph", "LUP.SceneGraph\LUP.SceneGraph.csproj", "{16EA4623-5427-4ACF-8822-ECABF6B01DEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A91DFC1C-6972-4EC1-931A-14BE58CB487F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A91DFC1C-6972-4EC1-931A-14BE58CB487F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A91DFC1C-6972-4EC1-931A-14BE58CB487F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16EA4623-5427-4ACF-8822-ECABF6B01DEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16EA4623-5427-4ACF-8822-ECABF6B01DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16EA4623-5427-4ACF-8822-ECABF6B01DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16EA4623-5427-4ACF-8822-ECABF6B01DEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

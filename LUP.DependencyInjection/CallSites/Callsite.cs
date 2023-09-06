@@ -9,5 +9,7 @@ namespace LUP.DependencyInjection.CallSites
     public abstract class Callsite
     {
         public required Type Alias { get; init; }
+
+        public required ServiceDescriptor? Root { get; init; }
     }
 }
