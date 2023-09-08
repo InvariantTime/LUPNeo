@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LUP.Logging
 {
-    public class Logger : ILogger
+    public class Logger<T> : ILogger<T>
     {
         private readonly ImmutableList<ILoggerService> services;
         private readonly string name;
@@ -15,7 +15,7 @@ namespace LUP.Logging
         public Logger(IEnumerable<ILoggerService> services)
         {
             this.services = services.ToImmutableList();
-            name = "Name";
+            name = typeof(T).Name;
         }
 
 

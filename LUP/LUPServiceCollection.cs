@@ -18,7 +18,7 @@ namespace LUP
 			descriptors = new HashSet<ServiceDescriptor>();
 
 			//Init default services
-			this.AddSingleton<ILogger, Logger>();
+			this.AddTransient(typeof(ILogger<>), typeof(Logger<>));
 			this.AddSingleton<ILoopPipeline, LoopPipeline>();
 		}
 
