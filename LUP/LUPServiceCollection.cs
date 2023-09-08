@@ -19,7 +19,7 @@ namespace LUP
 
 			//Init default services
 			this.AddSingleton<ILogger, Logger>();
-			this.AddSingleton<ILoggerService, ConsoleLoggerService>();
+			this.AddSingleton<ILoopPipeline, LoopPipeline>();
 		}
 
 

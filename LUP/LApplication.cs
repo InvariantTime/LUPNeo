@@ -7,28 +7,46 @@ using System.Threading.Tasks;
 
 namespace LUP
 {
-	public sealed class LApplication
+	public sealed class LApplication : IDisposable, IAsyncDisposable
 	{
 		public static LApplication? Current { get; private set; }
 
-		public IServicesProvider Services { get; private set; }
+		public IServicesProvider Services { get; }
+
+		public ILoopPipeline Loop { get; }
+
+		internal LApplication(IServicesProvider services)
+		{
+			if (Current != null)
+				throw new InvalidOperationException("Application already created");
+
+			Services = services;
+			Loop = services.GetService<ILoopPipeline>() ?? throw new InvalidOperationException("Loop was not created");
+		}
 		
 
-		internal LApplication(IServiceCollection services)
-		{
-			Services = services.BuildProvider();
-			Current = this;
-		}
-
-
-		public void AddUpdateModule()
-		{
-
-		}
-
-		
 		public void Run()
 		{
+			var context = new LoopContext();
+
+			while (true)
+			{
+				Loop.Run(context);
+			}
+		}
+
+
+		public void Dispose() 
+		{
+			Services.Dispose();
+			Loop.Dispose();
+		}
+
+
+		public async ValueTask DisposeAsync()
+		{
+			await Services.DisposeAsync();
+			await Loop.DisposeAsync();
 		}
 	}
 }
