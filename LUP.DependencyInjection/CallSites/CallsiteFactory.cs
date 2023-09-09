@@ -54,20 +54,23 @@ namespace LUP.DependencyInjection.CallSites
 
             if (descriptor == null)
             {
-                if (serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                if (serviceType.IsGenericType == true)
                 {
-                    var genericAlias = serviceType.GetGenericArguments().First();
+                    if (serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    {
+                        var genericAlias = serviceType.GetGenericArguments().First();
 
-                    if (genericAlias == null)
-                        throw new InvalidOperationException();
+                        if (genericAlias == null)
+                            throw new InvalidOperationException();
 
-                    return CreateEnumerable(genericAlias);
+                        return CreateEnumerable(genericAlias);
+                    }
+
+                    descriptor = descriptors.Find(x => serviceType.GetGenericTypeDefinition() == x.Type);
+
+                    if (descriptor != null)
+                        return CreateGenericDefinition(descriptor, serviceType);
                 }
-
-                descriptor = descriptors.Find(x => serviceType.GetGenericTypeDefinition() == x.Type);
-
-                if (descriptor != null)
-                    return CreateGenericDefinition(descriptor, serviceType);
 
                 return null;
             }
@@ -115,7 +118,8 @@ namespace LUP.DependencyInjection.CallSites
                     Alias = ssd.Type,
                     Implementation = ssd.Instance.GetType(),
                     LifeTime = LifeTimes.Singleton,
-                    Root = ssd
+                    Value = ssd.Instance,
+                    Root = ssd,
                 };
             }
 
