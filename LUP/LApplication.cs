@@ -11,11 +11,11 @@ namespace LUP
 	{
 		public static LApplication? Current { get; private set; }
 
-		public IServicesProvider Services { get; }
+		public IServiceProvider Services { get; }
 
 		public ILoopPipeline Loop { get; }
 
-		internal LApplication(IServicesProvider services)
+		internal LApplication(IServiceProvider services)
 		{
 			if (Current != null)
 				throw new InvalidOperationException("Application already created");
@@ -38,14 +38,18 @@ namespace LUP
 
 		public void Dispose() 
 		{
-			Services.Dispose();
+			if (Services is IDisposable d)
+				d.Dispose();
+
 			Loop.Dispose();
 		}
 
 
 		public async ValueTask DisposeAsync()
 		{
-			await Services.DisposeAsync();
+			if (Services is IAsyncDisposable ad)
+				await ad.DisposeAsync();
+
 			await Loop.DisposeAsync();
 		}
 	}

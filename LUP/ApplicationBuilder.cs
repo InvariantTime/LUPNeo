@@ -25,7 +25,7 @@ namespace LUP
 				throw new InvalidOperationException("Application is already initialized");
 
 			isInitialized = true;
-			return new LApplication(Services);
+			return new LApplication(Services.BuildProvider());
 		}
 	}
 }

@@ -6,7 +6,7 @@
 
         public IList<ActivatedMiddleware> ActivatedMiddlewares { get; }
 
-        public ServiceLifetimes Lifetime { get; set; }
+        public ServiceLifetimes Lifetime { get; set; } = ServiceLifetimes.Singleton;
 
         public ImplementRegistrationData()
         {
@@ -33,7 +33,7 @@
 
         public IList<ActivatedMiddleware> ActivatedMiddlewares { get; }
 
-        public ServiceLifetimes Lifetime { get; set; }
+        public ServiceLifetimes Lifetime { get; set; } = ServiceLifetimes.Singleton;
 
         public Type Type { get; }
 

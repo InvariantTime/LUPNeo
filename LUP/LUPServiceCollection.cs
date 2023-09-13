@@ -1,4 +1,5 @@
 ﻿using LUP.DependencyInjection;
+using LUP.DependencyInjection.Builder;
 using LUP.Logging;
 using System;
 using System.Collections;
@@ -11,30 +12,30 @@ namespace LUP
 {
 	sealed class LUPServiceCollection : IServiceCollection
 	{
-		private readonly HashSet<ServiceDescriptor> descriptors;
+		private readonly HashSet<IRegistrationData> datas;
 
 		public LUPServiceCollection()
 		{
-			descriptors = new HashSet<ServiceDescriptor>();
+			datas = new();
 
 			//Init default services
-			this.AddTransient(typeof(ILogger<>), typeof(Logger<>));
-			this.AddSingleton<ILoopPipeline, LoopPipeline>();
+			this.RegisterType(typeof(Logger<>)).As(typeof(ILogger<>));
+			this.RegisterType<LoopPipeline>().As<ILoopPipeline>();
 		}
 
 
-		public void Add(ServiceDescriptor serviceDescriptor)
+		public void Add(IRegistrationData data)
 		{
-			if (serviceDescriptor == null)
-				throw new ArgumentNullException(nameof(serviceDescriptor));
+			if (data == null)
+				throw new ArgumentNullException(nameof(data));
 
-			descriptors.Add(serviceDescriptor);
+			datas.Add(data);
 		}
 
 
-        public IEnumerator<ServiceDescriptor> GetEnumerator()
+        public IEnumerator<IRegistrationData> GetEnumerator()
         {
-			return descriptors.GetEnumerator();
+			return datas.GetEnumerator();
         }
 
 

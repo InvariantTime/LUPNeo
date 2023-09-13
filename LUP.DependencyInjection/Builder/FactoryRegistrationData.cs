@@ -6,7 +6,7 @@
 
         public IList<ActivatedMiddleware> ActivatedMiddlewares { get; }
 
-        public ServiceLifetimes Lifetime { get; set; }
+        public ServiceLifetimes Lifetime { get; set; } = ServiceLifetimes.Singleton;
 
         public Func<IServiceScope, TImpl?> Factory { get; }
 
