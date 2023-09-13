@@ -1,20 +1,19 @@
 ﻿using BenchmarkDotNet.Attributes;
 using LUP.DependencyInjection;
+using LUP.DependencyInjection.Builder;
 
 BenchmarkDotNet.Running.BenchmarkRunner.Run<DiBenchmark>();
 
 public class DiBenchmark
 {
-    private readonly IServicesProvider services;
+    private readonly IServiceProvider services;
 
     public DiBenchmark()
     {
-        var builder = new EmptyServiceCollection();
-        services = builder.AddSingleton<ISome1, Some1>()
-            .AddSingleton<ISome2, Some2>()
-            .BuildProvider();
-
-        services.GetService(typeof(Some1));
+        var builder = new ServiceCollection();
+        builder.RegisterType<Some1>().As<ISome1>().AsSingleton();
+        builder.RegisterType<Some2>().As<ISome2>().AsSingleton();
+        services = builder.BuildProvider();
     }
 
 

@@ -1,59 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LUP.DependencyInjection.Builder;
 
 namespace LUP.DependencyInjection
 {
-	public static class ServiceCollectionExtensions
-	{
-		public static IServiceCollection AddScoped(this IServiceCollection collection, Type type, Type implementation)
-		{
-			collection.Add(new DynamicServiceDescriptor(LifeTimes.Scope, type, implementation));
-			return collection;
-		}
+    public static class ServiceCollectionExtensions
+    {
+        public static IRegistrationBuilder<TImpl, ImplementRegistrationData<TImpl>>
+            RegisterType<TImpl>(this IServiceCollection collection)
+        {
+            return RegistrationFactory.CreateWithImplementation<TImpl>(collection);
+        }
 
 
-		public static IServiceCollection AddTransient(this IServiceCollection collection, Type type, Type implementation)
-		{
-			collection.Add(new DynamicServiceDescriptor(LifeTimes.Transient, type, implementation));
-			return collection;
-		}
+        public static IRegistrationBuilder<object, ImplementRegistrationData>
+            RegisterType(this IServiceCollection collection, Type type)
+        {
+            return RegistrationFactory.CreateWithImplementation(collection, type);
+        }
 
 
-		public static IServiceCollection AddSingleton(this IServiceCollection collection, Type type, Type implementation)
-		{
-			collection.Add(new DynamicServiceDescriptor(LifeTimes.Singleton, type, implementation));
-			return collection;
-		}
+        public static IRegistrationBuilder<TImpl, FactoryRegistrationData<TImpl>>
+            RegisterFactory<TImpl>(this IServiceCollection collection, Func<IServiceScope, TImpl> factory)
+        {
+            return RegistrationFactory.CreateWithFactory(collection, factory);
+        }
 
 
-		public static IServiceCollection AddScoped<TServ, TImpl>(this IServiceCollection collection) where TImpl : TServ
-			=> collection.AddScoped(typeof(TServ), typeof(TImpl));
+        public static IRegistrationBuilder<TIns, InstanceRegistrationData<TIns>>
+            RegisterInstance<TIns>(this IServiceCollection collection, TIns instance)
+        {
+            return RegistrationFactory.CreateWithInstance(collection, instance);
+        }
 
 
-		public static IServiceCollection AddTransient<TServ, TImpl>(this IServiceCollection collection) where TImpl : TServ
-			=> collection.AddTransient(typeof(TServ), typeof(TImpl));
+        public static IServiceProvider BuildProvider(this IServiceCollection collection)
+        {
+            return new ServiceProvider(collection);
+        }
 
 
-		public static IServiceCollection AddSingleton<TServ, TImpl>(this IServiceCollection collection) where TImpl : TServ
-			=> collection.AddSingleton(typeof(TServ), typeof(TImpl));
-
-		
-		public static IServiceCollection AddSingleton<TServ, TImpl>(this IServiceCollection collection, TImpl instance) where TImpl : TServ
-		{
-			collection.Add(new SingletonServiceDescriptor(typeof(TServ), instance!));
-			return collection;
-		}
-
-
-		public static IServicesProvider BuildProvider(this IServiceCollection collection)
-		{
-			if (collection == null)
-				throw new ArgumentNullException(nameof(collection));
-
-			return new ServiceProvider(collection);
-		}
-	}
+        internal static IEnumerable<ServiceDescriptor> GetDescriptors(this IServiceCollection collection)
+        {
+            return collection.Select(x => x.Build());
+        }
+    }
 }

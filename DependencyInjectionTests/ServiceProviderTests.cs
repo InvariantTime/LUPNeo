@@ -1,5 +1,5 @@
 using LUP.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LUP.DependencyInjection.Builder;
 
 namespace DependencyInjectionTests
 {
@@ -9,9 +9,9 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Scoped_Services_Equal_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddScoped<IEnumerable<int>, List<int>>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<List<int>>().As<IEnumerable<int>>().AsScoped();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
@@ -25,9 +25,9 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Transient_Services_Non_Equal_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddTransient<IEnumerable<int>, List<int>>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<List<int>>().As<IEnumerable<int>>().AsTransient();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
@@ -41,9 +41,9 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Singleton_Services_Equal_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddSingleton<IEnumerable<int>, List<int>>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<List<int>>().As<IEnumerable<int>>().AsSingleton();
+            var provider = collection.BuildProvider();
 
             var service1 = provider.GetService(typeof(IEnumerable<int>));
             var service2 = provider.GetService(typeof(IEnumerable<int>));
@@ -55,10 +55,10 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Assemble_Services_Test1()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddScoped<IEnumerable<int>, List<int>>()
-                .AddScoped<SomeClass, SomeClass>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<List<int>>().As<IEnumerable<int>>().AsSingleton();
+            collection.RegisterType<SomeClass>().AsSelf().AsScoped();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
@@ -72,10 +72,10 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Assemble_Services_Test2()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddTransient<IEnumerable<int>, List<int>>()
-                .AddScoped<SomeClass, SomeClass>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<List<int>>().As<IEnumerable<int>>().AsTransient();
+            collection.RegisterType<SomeClass>().AsSelf().AsScoped();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
@@ -89,12 +89,12 @@ namespace DependencyInjectionTests
         [TestMethod]
         public void Enumerable_Services_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddScoped<SomeScene, SomeScene>()
-                .AddScoped<IService, Service1>()
-                .AddScoped<IService, Service2>()
-                .AddScoped<IService, Service3>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType<SomeScene>().AsSelf().AsScoped();
+            collection.RegisterType<Service1>().As<IService>().AsScoped();
+            collection.RegisterType<Service2>().As<IService>().AsScoped();
+            collection.RegisterType<Service3>().As<IService>().AsScoped();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
@@ -108,37 +108,55 @@ namespace DependencyInjectionTests
 
 
         [TestMethod]
-        public void Generic_Service_Test()
+        public void Open_Generic_Service_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddScoped<SomeGeneric<IService>, SomeGeneric<IService>>()
-                .AddSingleton<IService, Service1>()
-                .BuildProvider();
+            ServiceCollection collection = new();
+            collection.RegisterType(typeof(GenericService<>)).As(typeof(IGenericService<>)).AsScoped();
+            collection.RegisterType<SomeClassDependGeneric>().AsSelf().AsScoped();
+            collection.RegisterType<Service1>().As<IService>().AsScoped();
+            var provider = collection.BuildProvider();
 
             var scope = provider.CreateScope();
 
-            var service1 = provider.GetService<IService>();
-            var service2 = scope.GetService<SomeGeneric<IService>>();
+            var service1 = scope.Services.GetService<IService>();
+            var service2 = scope.Services.GetService<SomeClassDependGeneric>();
 
-            Assert.AreEqual(service1, service2!.Generic);
+            Assert.AreEqual(service1, service2!.Generic.Generic);
         }
 
 
         [TestMethod]
-        public void Open_Generic_Service_Test()
+        public void OnActivated_Service_Test()
         {
-            EmptyServiceCollection collection = new();
-            var provider = collection.AddScoped(typeof(IGenericService<>), typeof(GenericService<>))
-                .AddScoped<SomeClassDependGeneric, SomeClassDependGeneric>()
-                .AddScoped<IService, Service1>()
-                .BuildProvider();
+            string testString = "test";
 
-            var scope = provider.CreateScope();
+            var collection = new ServiceCollection();
+            collection.RegisterType<Service1>().As<IService>().OnActivated(x => testString = "test 2").AsSingleton();
+            var porvider = collection.BuildProvider();
 
-            var service1 = scope.GetService<IService>();
-            var service2 = scope.GetService<SomeClassDependGeneric>();
+            string testString2 = "test 2";
 
-            Assert.AreEqual(service1, service2!.Generic.Generic);
+            var service = porvider.GetService<IService>();
+
+            Assert.AreEqual(testString, testString2);
+        }
+
+
+        [TestMethod]
+        public void OnActivated_Service_Test2()
+        {
+            var collection = new ServiceCollection();
+            collection.RegisterType<Service4>().AsSelf().OnActivated(x => x.Instance.Some = 25).AsTransient();
+            var provider = collection.BuildProvider();
+
+            int some = 25;
+
+            var service1 = provider.GetService<Service4>();
+            var service2 = provider.GetService<Service4>();
+
+            Assert.AreEqual(service1!.Some, some);
+            Assert.AreEqual(service2!.Some, some);
+            Assert.AreNotEqual(service1, service2);
         }
 
 
@@ -186,7 +204,7 @@ namespace DependencyInjectionTests
 
         interface IService { }
 
-        interface IGenericService<T> 
+        interface IGenericService<T>
         {
             T Generic { get; }
         }
@@ -206,5 +224,10 @@ namespace DependencyInjectionTests
         class Service2 : IService { }
 
         class Service3 : IService { }
+
+        class Service4 : IService
+        {
+            public int Some { get; set; }
+        }
     }
 }

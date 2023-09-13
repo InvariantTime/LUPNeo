@@ -1,30 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LUP.DependencyInjection
+﻿namespace LUP.DependencyInjection
 {
     public static class ServiceProviderExtensions
     {
-        public static T? GetService<T>(this IServicesProvider provider)
+        public static T? GetService<T>(this IServiceProvider provider)
         {
-            var result = provider.GetService(typeof(T));
-
-            return (T?)result;
+            return (T?)provider.GetService(typeof(T));
         }
 
 
-        public static T? GetService<T>(this IServiceScope scope)
+        public static IServiceScope CreateScope(this IServiceProvider provider)
         {
-            return scope.Services.GetService<T>();
-        }
+            var factory = provider.GetService<IScopeFactory>()
+                ?? throw new InvalidOperationException();
 
-
-        public static object? GetService(this IServiceScope scope, Type type)
-        {
-            return scope.Services.GetService(type);
+            return factory.CreateScope();
         }
     }
 }

@@ -1,18 +1,12 @@
 ﻿using LUP.DependencyInjection;
-using System.Collections;
+using LUP.DependencyInjection.Builder;
 
-var builder = new EmptyServiceCollection();
+var builder = new ServiceCollection();
 
-builder.AddScoped<SomeClass, SomeClass>()
-    .AddScoped(typeof(SomeGeneric<>), typeof(SomeGeneric<>));
+builder.RegisterType<SomeClass>().AsSelf().AsScoped();
 
 var services = builder.BuildProvider();
 var scope = services.CreateScope();
-
-var generic = scope.GetService<SomeGeneric<int>>();
-var some = scope.GetService<SomeClass>();
-
-Console.WriteLine();
 
 
 class SomeGeneric<T>

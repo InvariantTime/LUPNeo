@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LUP.DependencyInjection
+﻿namespace LUP.DependencyInjection
 {
-    public interface IServiceScope : IDisposable
+    public interface IServiceScope
     {
-        IServicesProvider Services { get; }
+        IServiceProvider Services { get; }
     }
 }

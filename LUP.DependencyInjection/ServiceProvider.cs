@@ -1,32 +1,26 @@
-﻿using LUP.DependencyInjection.CallSites;
-using LUP.DependencyInjection.Factories;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LUP.DependencyInjection.Builder;
+using LUP.DependencyInjection.Resolve;
 
 namespace LUP.DependencyInjection
 {
-    public class ServiceProvider : IServicesProvider
+    public class ServiceProvider : IServiceProvider, IScopeFactory
     {
-        private readonly ConcurrentDictionary<Type, Func<ServiceScope, object?>> activators;
         private readonly ServiceProviderEngine engine;
         private readonly ICallsiteFactory callsiteFactory;
-        private readonly ServiceScope root;
 
+        internal ServiceScope Root { get; }
 
-        internal ServiceProvider(IEnumerable<ServiceDescriptor> descriptors)
+        internal ServiceProvider(IServiceCollection collection)
         {
+            collection.RegisterInstance(this).As<IScopeFactory>().AsSingleton();
+            var descriptors = collection.GetDescriptors();
+
             callsiteFactory = new CallsiteFactory(descriptors);
-            root = new(this);
-            activators = new();
-            engine = ServiceProviderEngine.Instance;
+            engine = new ServiceProviderEngine();
+            Root = new ServiceScope(this);
         }
 
-
-        public object? GetService(Type serviceType) => GetService(serviceType, root);
+        public object? GetService(Type serviceType) => GetService(serviceType, Root);
 
 
         public IServiceScope CreateScope()
@@ -37,50 +31,24 @@ namespace LUP.DependencyInjection
 
         internal object? GetService(Type serviceType, ServiceScope scope)
         {
-            var activator = activators.GetOrAdd(serviceType, CreateActivator);
-
-            return activator.Invoke(scope);
-        }
-
-
-        internal object? GetService(ServiceScope scope, Callsite callsite)
-        {
-            var activator = CreateActivatorByCallsite(callsite);
-            return activator?.Invoke(scope);
-        }
-
-
-        private Func<ServiceScope, object?> CreateActivator(Type serviceType)
-        {
             var callsite = callsiteFactory.GetCallsite(serviceType);
-            return CreateActivatorByCallsite(callsite);  
+            return GetServiceByCallsite(callsite, scope);
         }
 
 
-        private Func<ServiceScope, object?> CreateActivatorByCallsite(Callsite? callsite)
+        internal object? GetServiceByCallsite(ServiceCallsite? callsite, ServiceScope scope)
         {
             if (callsite == null)
-                return _ => null;
+                return null;
 
-            if (callsite is InstanceCallsite { LifeTime: LifeTimes.Singleton } ics)
+            var context = new ResolveContext()
             {
-                var value = engine.Factory.CreateService(ics, root);
-                return _ => value;
-            }
+                Callsite = callsite,
+                Root = Root,
+                Scope = scope
+            };
 
-            return engine.CreateActivator(callsite);
-        }
-
-
-        void IDisposable.Dispose()
-        {
-            root.Dispose();
-        }
-
-
-        ValueTask IAsyncDisposable.DisposeAsync()
-        {
-            return root.DisposeAsync();
+            return engine.Resolve(context);
         }
     }
 }
