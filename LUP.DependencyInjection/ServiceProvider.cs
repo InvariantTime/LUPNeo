@@ -3,7 +3,7 @@ using LUP.DependencyInjection.Resolve;
 
 namespace LUP.DependencyInjection
 {
-    public class ServiceProvider : IServiceProvider, IScopeFactory
+    public class ServiceProvider : IServiceProvider, IScopeFactory, IDisposable, IAsyncDisposable
     {
         private readonly ServiceProviderEngine engine;
         private readonly ICallsiteFactory callsiteFactory;
@@ -49,6 +49,20 @@ namespace LUP.DependencyInjection
             };
 
             return engine.Resolve(context);
+        }
+
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Root.Dispose();
+        }
+
+
+        public async ValueTask DisposeAsync()
+        {
+            GC.SuppressFinalize(this);
+            await Root.DisposeAsync();
         }
     }
 }
