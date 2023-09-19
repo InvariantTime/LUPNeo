@@ -22,22 +22,19 @@ namespace LUP.DependencyInjection
         }
 
 
-        public object? GetOrAddService(ServiceCallsite callsite, Func<ServiceCallsite, object?> func)
+        public bool TryGetService(ServiceCallsite callsite, out object? service)
         {
-            var result = activatedServices.TryGetValue(callsite, out var obj);
+            var result = activatedServices.TryGetValue(callsite, out service);
+            return result;
+        }
 
-            if (result == false)
-            {
-                obj = func?.Invoke(callsite);
 
-                if (obj != null)
-                {
-                    activatedServices.TryAdd(callsite, obj);
-                    disposables.Push(obj);
-                }
-            }
+        public void AddService(ServiceCallsite callsite, object? service)
+        {
+            activatedServices.TryAdd(callsite, service);
 
-            return obj;
+            if (service != null)
+                disposables.Push(service);
         }
 
 

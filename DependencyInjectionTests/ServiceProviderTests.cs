@@ -23,6 +23,21 @@ namespace DependencyInjectionTests
 
 
         [TestMethod]
+        public void Factory_Services_Test()
+        {
+            ServiceCollection collection = new();
+            collection.RegisterFactory(x => new Service3()).As<IService>().AsScoped();
+            var provider = collection.BuildProvider();
+
+            var scope = provider.CreateScope();
+            var service = scope.Services.GetService<IService>();
+
+            Assert.IsNotNull(service);
+            Assert.IsInstanceOfType(service, typeof(Service3));
+        }
+
+
+        [TestMethod]
         public void Transient_Services_Non_Equal_Test()
         {
             ServiceCollection collection = new();
@@ -146,7 +161,12 @@ namespace DependencyInjectionTests
         public void OnActivated_Service_Test2()
         {
             var collection = new ServiceCollection();
-            collection.RegisterType<Service4>().AsSelf().OnActivated(x => x.Instance.Some = 25).AsTransient();
+            collection.RegisterType<Service4>().AsSelf().OnActivated(x =>
+            {
+                x.Instance.Some = 25;
+
+            }).AsTransient();
+
             var provider = collection.BuildProvider();
 
             int some = 25;

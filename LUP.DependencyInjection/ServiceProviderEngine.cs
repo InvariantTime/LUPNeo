@@ -1,5 +1,6 @@
 ﻿using LUP.DependencyInjection.Factories;
 using LUP.DependencyInjection.Resolve;
+using System.Runtime.CompilerServices;
 
 namespace LUP.DependencyInjection
 {
@@ -23,23 +24,31 @@ namespace LUP.DependencyInjection
                 if (ics.Lifetime == ServiceLifetimes.Transient)
                     return ResolveInstance(ics, context.Scope);
 
-                if (ics.Lifetime == ServiceLifetimes.Scoped)
-                    return context.Scope.GetOrAddService(ics, _ => ResolveInstance(ics, context.Scope));
+                var scope = ics.Lifetime switch
+                {
+                    ServiceLifetimes.Singleton => context.Root,
+                    ServiceLifetimes.Scoped => context.Scope,
+                    _ => throw new NotSupportedException()
+                };
 
-                if (ics.Lifetime == ServiceLifetimes.Singleton)
-                    return context.Root.GetOrAddService(ics, _ => ResolveInstance(ics, context.Scope));
+                var contains = scope.TryGetService(context.Callsite, out var service);
+
+                if (contains == false)
+                    service = ResolveInstance(ics, scope);
+                
+                return service;
             }
 
             return null;
         }
 
 
-        private object? ResolveInstance(InstanceCallsite callsite, IServiceScope scope)
+        private object? ResolveInstance(InstanceCallsite callsite, ServiceScope scope)
         {
             var result = Factory.Create(callsite, scope);
 
-            if (result == null)
-                return null;
+            if (callsite.Lifetime != ServiceLifetimes.Transient)
+                scope.AddService(callsite, result);
 
             foreach (var middleware in callsite.Root?.ActivatedMiddlewares ?? Enumerable.Empty<ActivatedMiddleware>())
                 middleware.Invoke(result, scope);
