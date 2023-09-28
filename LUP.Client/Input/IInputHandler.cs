@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LUP.Client
+namespace LUP.Client.Input
 {
-    public interface IInput
+    public interface IInputHandler
     {
-        void HandleEvents();
+
     }
 }

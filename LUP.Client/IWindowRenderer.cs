@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace LUP.Client
 {
-    public class DesktopSettings
+    public interface IWindowRenderer
     {
-        public string? Title { get; set; }
+        void Init(IntPtr window);
 
-        public int Width { get; set; }
-
-        public int Height { get; set; }
+        void Render();
     }
 }

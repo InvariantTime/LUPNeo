@@ -1,68 +1,90 @@
-﻿using LUP.Logging;
-using Silk.NET.SDL;
+﻿using LUP.Client.Input;
+using LUP.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace LUP.Client
 {
-    public unsafe class DesktopWindow : IInput, IWindow, IDisposable
+    unsafe sealed class DesktopWindow : DisposableObject, IDesktopWindow, IInputHandler
     {
-        private readonly Sdl sdl;
-        private readonly Window* handle;
-        private readonly Renderer* renderer;
-        private readonly ILogger<DesktopWindow> logger;
+        private readonly Window* window;
 
-        public string Title
+        public string Title 
         {
-            get => sdl.GetWindowTitleS(handle);
+            get => "";
 
-            set => sdl.SetWindowTitle(handle, value);
-        }
-
-        public DesktopWindow(ILogger<DesktopWindow> logger, IOption<DesktopSettings> settings)
-        {
-            this.logger = logger;
-            sdl = Sdl.GetApi();
-
-            var s = settings.Accessor;
-            handle = sdl.CreateWindow(s.Title, Sdl.WindowposUndefined, 
-                Sdl.WindowposUndefined, s.Width, s.Height, BuildFlags(s));
-
-            if (handle == null)
-                logger.Error("Unable to create window", sdl.GetErrorAsException());
-
-            renderer = sdl.CreateRenderer(handle, -1, (uint)(RendererFlags.Accelerated | RendererFlags.Presentvsync));
-
-            if (renderer == null)
-                logger.Error("Unable to create renderer", sdl.GetErrorAsException());
+            set { }
         }
 
 
-        public void HandleEvents()
+        public bool Visible
         {
-            Event e = new();
-            while(sdl.PollEvent(ref e) == 1)
+            get => true;
+
+            set
             {
-
+                if (value == true)
+                    GLFW.ShowWindow(window);
+                else
+                    GLFW.HideWindow(window);
             }
         }
 
-        
-        public void Render()
+        public bool Fullscreen//TODO: window fullscreen
         {
+            get => false;
+            
+            set
+            {
+                
+            }
+        }
 
+        public Vector2 Size 
+        {
+            get
+            {
+                GLFW.GetWindowSize(window, out int w, out int h);
+                return new Vector2(w, h);
+            }
+            
+            set
+            {
+                GLFW.SetWindowSize(window, (int)value.X, (int)value.Y);
+            }
+        }
+
+        public IWindowRenderer Renderer { get; }
+
+        public DesktopWindow(IOption<WindowConfig> option, IWindowRenderer renderer)
+        {
+            GLFW.Init();
+
+            var op = option.Accessor;
+            window = GLFW.CreateWindow((int)op.Size.X, (int)op.Size.Y, op.Title, null, null);
+
+            if (op.Visible == true)
+                GLFW.ShowWindow(window);
+
+            Renderer = renderer ?? new DefaultRenderer();
+            Renderer.Init(new nint(window));
         }
 
 
-        public void Dispose()
+        public void Update()
         {
-            sdl.DestroyWindow(handle);
-            sdl.DestroyRenderer(renderer);
-            sdl.Dispose();
+            GLFW.PollEvents();
         }
 
 
-        private static uint BuildFlags(DesktopSettings settings)
+        public void SwapBuffers()
         {
-            return (uint)(WindowFlags.Shown);
+            GLFW.SwapBuffers(window);
+        }
+
+
+        protected override void OnUnmanagedDisposed()
+        {
+            GLFW.DestroyWindow(window);
         }
     }
 }

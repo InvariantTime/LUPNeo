@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LUP.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,21 @@ namespace LUP.Client
 {
     public interface IWindow
     {
+        Vector2 Size { get; set; }
+
+        IWindowRenderer Renderer { get; }
+
+        void Update();
+
+        void SwapBuffers();
+    }
+
+    public interface IDesktopWindow : IWindow
+    {
         string Title { get; set; }
 
-        void Render();
+        bool Visible { get; set; }
+
+        bool Fullscreen { get; set; }
     }
 }

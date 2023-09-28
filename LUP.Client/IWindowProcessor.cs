@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LUP.Client
 {
-    public interface IInputStage : IApplicationStage, IDisposable
+    public interface IWindowProcessor : IApplicationStage
     {
-
+        IWindow Window { get; }
     }
 }
