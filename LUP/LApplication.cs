@@ -27,9 +27,10 @@ namespace LUP
 
 		public void Run()
 		{
-			var context = new LoopContext();
+			var cancel = new CancellationTokenSource();
+			var context = new LoopContext(cancel.Token);
 
-			while (true)
+			while (cancel.IsCancellationRequested == false)
 			{
 				Loop.Run(context);
 			}

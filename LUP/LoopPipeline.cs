@@ -6,7 +6,7 @@
 
         public void AddStage(IApplicationStage stage)
         {
-            if (stages.First(x => x.GetType() == stage.GetType()) != null)
+            if (stages.FirstOrDefault(x => x.GetType() == stage.GetType()) != null)
                 throw new ArgumentException("There is already such stage", nameof(stage));
 
             stages.Push(stage);
@@ -21,6 +21,8 @@
         
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             foreach (var stage in stages)
             {
                 if (stage is IDisposable d)
@@ -28,15 +30,15 @@
                     d.Dispose();
                 }
                 else if (stage is IAsyncDisposable ad)
-                {
-                    ad.DisposeAsync().GetAwaiter();
-                }
+                    throw new Exception("Object cannot be disposed async");
             }
         }
 
 
         public async ValueTask DisposeAsync()
         {
+            GC.SuppressFinalize(this);
+
             foreach (var stage in stages)
             {
                 if (stage is IAsyncDisposable ad)

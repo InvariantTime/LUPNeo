@@ -1,12 +1,7 @@
-﻿using LUP.DependencyInjection;
+﻿using System.Collections;
+using LUP.DependencyInjection;
 using LUP.DependencyInjection.Builder;
 using LUP.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP
 {
@@ -19,8 +14,9 @@ namespace LUP
 			datas = new();
 
 			//Init default services
-			this.RegisterType(typeof(Logger<>)).As(typeof(ILogger<>));
+			this.RegisterType(typeof(Logger<>)).As(typeof(ILogger<>)).AsSingleton();
 			this.RegisterType<LoopPipeline>().As<ILoopPipeline>();
+			this.RegisterType(typeof(Option<>)).As(typeof(IOption<>)).As(typeof(Option<>));
 		}
 
 
