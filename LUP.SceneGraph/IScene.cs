@@ -1,6 +1,10 @@
-﻿namespace LUP.SceneGraph
+﻿using LUP.SceneGraph.Modules;
+using LUP.SceneGraph.Objects;
+
+namespace LUP.SceneGraph
 {
-    public interface IScene
+    public interface IScene : IRootObjectProvider, IModuleProvider, IDisposable
     {
+        bool IsInitialized { get; }
     }
 }

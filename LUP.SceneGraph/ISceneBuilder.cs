@@ -1,4 +1,4 @@
-﻿using LUP.DependencyInjection;
+﻿using LUP.SceneGraph.Descriptors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,5 +7,8 @@ using System.Threading.Tasks;
 
 namespace LUP.SceneGraph
 {
-    public sealed record SceneProvider(IServiceScope Scope, IScene Scene);
+    interface ISceneBuilder
+    {
+        SceneProvider BuildScene(ISceneDescriptor? descriptor);
+    }
 }
