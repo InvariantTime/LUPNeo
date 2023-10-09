@@ -1,5 +1,4 @@
-﻿
-using LUP.Mathematics;
+﻿using LUP.Math;
 
 namespace LUP.Client
 {
@@ -7,13 +6,13 @@ namespace LUP.Client
     {
         public void Init(IntPtr window)
         {
-            
+
         }
 
 
         public void Render()
         {
-            
+
         }
 
 
@@ -24,7 +23,7 @@ namespace LUP.Client
 
         protected override void OnUnmanagedDisposed()
         {
-            
+
         }
     }
 }

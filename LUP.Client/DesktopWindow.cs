@@ -1,5 +1,5 @@
 ﻿using LUP.Client.Input;
-using LUP.Mathematics;
+using LUP.Math;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace LUP.Client
@@ -8,7 +8,7 @@ namespace LUP.Client
     {
         private readonly Window* window;
 
-        public string Title 
+        public string Title
         {
             get => "";
 
@@ -32,21 +32,21 @@ namespace LUP.Client
         public bool Fullscreen//TODO: window fullscreen
         {
             get => false;
-            
+
             set
             {
-                
+
             }
         }
 
-        public Vector2 Size 
+        public Vector2 Size
         {
             get
             {
                 GLFW.GetWindowSize(window, out int w, out int h);
                 return new Vector2(w, h);
             }
-            
+
             set
             {
                 GLFW.SetWindowSize(window, (int)value.X, (int)value.Y);
