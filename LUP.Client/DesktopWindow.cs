@@ -67,12 +67,14 @@ namespace LUP.Client
 
             Renderer = renderer ?? new DefaultRenderer();
             Renderer.Init(new nint(window));
+
+            GLFW.SetWindowSizeCallback(window, (o, w, h) => Renderer.Resize(new Vector2(w, h)));
         }
 
 
         public void Update()
         {
-            GLFW.PollEvents();
+            GLFW.WaitEvents();
         }
 
 

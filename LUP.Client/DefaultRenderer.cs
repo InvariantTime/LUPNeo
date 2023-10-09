@@ -1,4 +1,6 @@
 ﻿
+using LUP.Mathematics;
+
 namespace LUP.Client
 {
     unsafe class DefaultRenderer : DisposableObject, IWindowRenderer//TODO: default renderer
@@ -12,6 +14,11 @@ namespace LUP.Client
         public void Render()
         {
             
+        }
+
+
+        public void Resize(Vector2 size)
+        {
         }
 
 
