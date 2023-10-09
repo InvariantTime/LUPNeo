@@ -18,7 +18,7 @@
                 stage.Handle(context);
         }
 
-        
+
         public void Dispose()
         {
             GC.SuppressFinalize(this);

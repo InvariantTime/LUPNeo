@@ -1,43 +1,43 @@
-﻿using System.Collections;
-using LUP.DependencyInjection;
+﻿using LUP.DependencyInjection;
 using LUP.DependencyInjection.Builder;
 using LUP.Logging;
+using System.Collections;
 
 namespace LUP
 {
-	sealed class LUPServiceCollection : IServiceCollection
-	{
-		private readonly HashSet<IRegistrationData> datas;
+    sealed class LUPServiceCollection : IServiceCollection
+    {
+        private readonly HashSet<IRegistrationData> datas;
 
-		public LUPServiceCollection()
-		{
-			datas = new();
+        public LUPServiceCollection()
+        {
+            datas = new();
 
-			//Init default services
-			this.RegisterType(typeof(Logger<>)).As(typeof(ILogger<>)).AsSingleton();
-			this.RegisterType<LoopPipeline>().As<ILoopPipeline>();
-			this.RegisterType(typeof(Option<>)).As(typeof(IOption<>)).As(typeof(Option<>));
-		}
+            //Init default services
+            this.RegisterType(typeof(Logger<>)).As(typeof(ILogger<>)).AsSingleton();
+            this.RegisterType<LoopPipeline>().As<ILoopPipeline>();
+            this.RegisterType(typeof(Option<>)).As(typeof(IOption<>)).As(typeof(Option<>));
+        }
 
 
-		public void Add(IRegistrationData data)
-		{
-			if (data == null)
-				throw new ArgumentNullException(nameof(data));
+        public void Add(IRegistrationData data)
+        {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
 
-			datas.Add(data);
-		}
+            datas.Add(data);
+        }
 
 
         public IEnumerator<IRegistrationData> GetEnumerator()
         {
-			return datas.GetEnumerator();
+            return datas.GetEnumerator();
         }
 
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-			return GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

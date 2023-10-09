@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LUP.Logging
+﻿namespace LUP.Logging
 {
     public class ConsoleLoggerService : ILoggerService
     {
@@ -31,7 +24,7 @@ namespace LUP.Logging
             Console.ForegroundColor = defaultColor;
         }
 
-        
+
         private static string FormatText(LogMessage message)
         {
             var source = $" {message.Source ?? string.Empty}:";

@@ -2,10 +2,10 @@
 
 namespace LUP
 {
-	public interface IApplicationBuilder
-	{
-		IServiceCollection Services { get; }
+    public interface IApplicationBuilder
+    {
+        IServiceCollection Services { get; }
 
-		LApplication Build();
-	}
+        LApplication Build();
+    }
 }

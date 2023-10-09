@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LUP
+﻿namespace LUP
 {
     public class DisposableObject : IDisposable
     {
         public bool IsDisposed { get; private set; }
 
 
-        ~DisposableObject() 
+        ~DisposableObject()
         {
             DisposeInternal(false);
         }
