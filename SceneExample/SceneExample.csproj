@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Client\LUP.Client.csproj" />
+    <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LUP.Graphics.OpenGL\LUP.Graphics.OpenGL.csproj" />
+    <ProjectReference Include="..\LUP.SceneGraph\LUP.SceneGraph.csproj" />
+    <ProjectReference Include="..\LUP\LUP.csproj" />
+  </ItemGroup>
+
+</Project>
