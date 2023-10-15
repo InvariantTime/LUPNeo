@@ -12,6 +12,7 @@
 
         public void Handle(LoopContext context)
         {
+            Input.Update();
         }
     }
 }

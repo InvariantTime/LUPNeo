@@ -9,12 +9,25 @@ namespace LUP.Client
         public static void AddDesktopWindow(this IServiceCollection services)
         {
             services.RegisterType<DesktopWindow>()
-                .As<IDesktopWindow>().As<IWindow>().As<IInputHandler>().AsSelf()
+                .As<IDesktopWindow>().As<IWindow>().AsSelf()
                 .AsSingleton();
 
             services.RegisterType<WindowProcessor>()
                 .As<IWindowProcessor>().AsSelf()
                 .AsSingleton();
+
+            services.RegisterType<InputProcessor>()
+                .As<IInputProcessor>().AsSelf()
+                .AsSingleton();
+
+            services.RegisterFactory(x =>
+            {
+                var win = x.GetService<DesktopWindow>()
+                    ?? throw new InvalidOperationException("There is no window");
+
+                return win.Input;
+
+            }).As<IInputHandler>().AsSingleton();
         }
 
 

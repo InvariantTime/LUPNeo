@@ -4,7 +4,7 @@ namespace LUP.Client
 {
     public interface IWindowRenderer
     {
-        void Init(IntPtr window);
+        void Init(IntPtr window, int width, int height);
 
         void Render();
 

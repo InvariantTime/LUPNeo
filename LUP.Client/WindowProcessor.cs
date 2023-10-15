@@ -12,9 +12,8 @@
 
         public void Handle(LoopContext context)
         {
-            Window.Update();
             Window.Renderer?.Render();
-            Window.SwapBuffers();
+            Window.Update();
         }
     }
 }

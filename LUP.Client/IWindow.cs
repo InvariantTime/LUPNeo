@@ -9,16 +9,12 @@ namespace LUP.Client
         IWindowRenderer Renderer { get; }
 
         void Update();
-
-        void SwapBuffers();
     }
 
     public interface IDesktopWindow : IWindow
     {
-        string Title { get; set; }
-
         bool Visible { get; set; }
 
-        bool Fullscreen { get; set; }
+        DesktopWindowStates States { get; set; }
     }
 }

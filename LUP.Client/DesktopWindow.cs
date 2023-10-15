@@ -1,20 +1,15 @@
 ﻿using LUP.Client.Input;
+using LUP.Client.Input.GLFWInput;
 using LUP.Math;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace LUP.Client
 {
-    unsafe sealed class DesktopWindow : DisposableObject, IDesktopWindow, IInputHandler
+    //TODO: input
+    unsafe sealed partial class DesktopWindow : DisposableObject, IDesktopWindow
     {
         private readonly Window* window;
-
-        public string Title
-        {
-            get => "";
-
-            set { }
-        }
-
+        private readonly GLFWInput input;
 
         public bool Visible
         {
@@ -26,16 +21,6 @@ namespace LUP.Client
                     GLFW.ShowWindow(window);
                 else
                     GLFW.HideWindow(window);
-            }
-        }
-
-        public bool Fullscreen//TODO: window fullscreen
-        {
-            get => false;
-
-            set
-            {
-
             }
         }
 
@@ -55,6 +40,10 @@ namespace LUP.Client
 
         public IWindowRenderer Renderer { get; }
 
+        public DesktopWindowStates States { get; set; }
+
+        public IInputHandler Input => input;
+
         public DesktopWindow(IOption<WindowConfig> option, IWindowRenderer renderer)
         {
             GLFW.Init();
@@ -65,28 +54,31 @@ namespace LUP.Client
             if (op.Visible == true)
                 GLFW.ShowWindow(window);
 
-            Renderer = renderer ?? new DefaultRenderer();
-            Renderer.Init(new nint(window));
+            input = new GLFWInput(window);
 
-            GLFW.SetWindowSizeCallback(window, (o, w, h) => Renderer.Resize(new Vector2(w, h)));
+            Renderer = renderer ?? new DefaultRenderer();
+            Renderer.Init(new nint(window), (int)op.Size.X, (int)op.Size.Y);
+
+            InitCallbacks(window);
         }
 
 
         public void Update()
         {
-            GLFW.WaitEvents();
-        }
-
-
-        public void SwapBuffers()
-        {
             GLFW.SwapBuffers(window);
+            GLFW.PollEvents();
         }
 
 
-        protected override void OnUnmanagedDisposed()
+        protected override void OnManagedDisposed()
         {
             GLFW.DestroyWindow(window);
+        }
+
+
+        private void OnStateChange()
+        {
+
         }
     }
 }
