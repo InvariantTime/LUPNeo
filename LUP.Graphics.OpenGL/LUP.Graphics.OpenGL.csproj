@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK.Graphics" Version="4.8.1" />
+    <PackageReference Include="OpenTK.Windowing.GraphicsLibraryFramework" Version="4.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Client\LUP.Client.csproj" />
+    <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LUP.Graphics\LUP.Graphics.csproj" />
+    <ProjectReference Include="..\LUP.Math\LUP.Math.csproj" />
+    <ProjectReference Include="..\LUP\LUP.csproj" />
+  </ItemGroup>
+
+</Project>
