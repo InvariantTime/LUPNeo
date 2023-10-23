@@ -14,7 +14,8 @@ namespace LUP.Rendering.Export
         {
             using AssimpContext context = new();
             var scene = context.ImportFile(file, PostProcessSteps.Triangulate
-                | PostProcessSteps.CalculateTangentSpace | PostProcessSteps.GenerateNormals);
+                | PostProcessSteps.CalculateTangentSpace 
+                | PostProcessSteps.FlipUVs | PostProcessSteps.GenerateNormals);
 
 
             return new ModelResult

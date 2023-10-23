@@ -1,6 +1,5 @@
 ﻿using LUP.DependencyInjection.Factories;
 using LUP.DependencyInjection.Resolve;
-using System.Runtime.CompilerServices;
 
 namespace LUP.DependencyInjection
 {
@@ -35,7 +34,7 @@ namespace LUP.DependencyInjection
 
                 if (contains == false)
                     service = ResolveInstance(ics, scope);
-                
+
                 return service;
             }
 
@@ -46,6 +45,9 @@ namespace LUP.DependencyInjection
         private object? ResolveInstance(InstanceCallsite callsite, ServiceScope scope)
         {
             var result = Factory.Create(callsite, scope);
+
+            if (result == null)
+                return null;
 
             if (callsite.Lifetime != ServiceLifetimes.Transient)
                 scope.AddService(callsite, result);

@@ -1,4 +1,5 @@
-﻿using LUP.Graphics.Enums;
+﻿using LUP.Graphics.Effects;
+using LUP.Graphics.Enums;
 using OpenTK.Graphics.OpenGL;
 
 namespace LUP.Graphics.OpenGL
@@ -171,6 +172,83 @@ namespace LUP.Graphics.OpenGL
                 BufferUsages.StreamRead => BufferUsageHint.StreamRead,
 
                 _ => throw new NotSupportedException()
+            };
+        }
+
+
+        public static TextureUnit Convert(TextureBindings binding)
+        {
+            int b = (int)binding;
+            return TextureUnit.Texture0 + b;
+        }
+
+
+        public static EffectUniformTypes Convert(ActiveUniformType type)
+        {
+            return type switch
+            {
+                ActiveUniformType.Int => EffectUniformTypes.Int,
+
+                ActiveUniformType.Float => EffectUniformTypes.Float,
+
+                ActiveUniformType.Double => EffectUniformTypes.Double,
+
+                ActiveUniformType.Bool => EffectUniformTypes.Bool,
+
+                ActiveUniformType.UnsignedInt => EffectUniformTypes.Uint,
+
+                ActiveUniformType.FloatVec2 => EffectUniformTypes.Vec2,
+
+                ActiveUniformType.IntVec2 => EffectUniformTypes.IVec2,
+
+                ActiveUniformType.DoubleVec2 => EffectUniformTypes.DVec2,
+
+                ActiveUniformType.UnsignedIntVec2 => EffectUniformTypes.UVec2,
+
+                ActiveUniformType.FloatVec3 => EffectUniformTypes.Vec3,
+
+                ActiveUniformType.IntVec3 => EffectUniformTypes.IVec3,
+
+                ActiveUniformType.DoubleVec3 => EffectUniformTypes.DVec3,
+
+                ActiveUniformType.UnsignedIntVec3 => EffectUniformTypes.UVec3,
+
+                ActiveUniformType.FloatVec4 => EffectUniformTypes.Vec4,
+
+                ActiveUniformType.IntVec4 => EffectUniformTypes.IVec4,
+
+                ActiveUniformType.DoubleVec4 => EffectUniformTypes.DVec4,
+
+                ActiveUniformType.UnsignedIntVec4 => EffectUniformTypes.UVec4,
+
+                ActiveUniformType.FloatMat4 => EffectUniformTypes.Mat4,
+
+                _ => EffectUniformTypes.None
+            };
+        }
+
+
+        public static DepthFunction Convert(DepthFunctions function)
+        {
+            return function switch
+            {
+                DepthFunctions.Never => DepthFunction.Never,
+
+                DepthFunctions.Less => DepthFunction.Less,
+
+                DepthFunctions.Greater => DepthFunction.Greater,
+
+                DepthFunctions.Equal => DepthFunction.Equal,
+
+                DepthFunctions.NotEqual => DepthFunction.Notequal,
+
+                DepthFunctions.GreaterEqual => DepthFunction.Gequal,
+
+                DepthFunctions.LessEqual => DepthFunction.Lequal,
+
+                DepthFunctions.Always => DepthFunction.Always,
+
+                _ => throw new NotImplementedException()
             };
         }
     }

@@ -1,11 +1,5 @@
 ﻿using LUP.SceneGraph.Modules;
 using LUP.SceneGraph.Objects;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph
 {
@@ -33,7 +27,7 @@ namespace LUP.SceneGraph
             return objects!;
         }
 
-        
+
         public IRootObjectScope GetRootObjects()
         {
             if (IsInitialized == false)

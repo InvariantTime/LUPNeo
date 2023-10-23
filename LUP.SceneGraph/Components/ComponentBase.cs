@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LUP.SceneGraph.Components
+﻿namespace LUP.SceneGraph.Components
 {
     public abstract class ComponentBase : DisposableObject
     {
@@ -33,6 +27,15 @@ namespace LUP.SceneGraph.Components
         }
 
 
+        protected T? GetComponent<T>() where T : ComponentBase
+        {
+            if (IsInitialized == false)
+                throw new InvalidOperationException("Component is not initialized");
+
+            return owner!.GetComponent<T>();
+        }
+
+
         internal void Initialize(SceneObject owner, IScene scene)
         {
             this.owner = owner;
@@ -50,6 +53,12 @@ namespace LUP.SceneGraph.Components
             IsInitialized = false;
             owner = null;
             Scene = null;
+        }
+
+
+        internal SceneObject? GetOwner()
+        {
+            return owner;
         }
     }
 }

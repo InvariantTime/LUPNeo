@@ -1,10 +1,5 @@
 ﻿using LUP.SceneGraph.Descriptors;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph.Objects
 {
@@ -47,7 +42,7 @@ namespace LUP.SceneGraph.Objects
 
         public IEnumerator<SceneObject> GetEnumerator()
         {
-           return objects.GetEnumerator();
+            return objects.GetEnumerator();
         }
 
 

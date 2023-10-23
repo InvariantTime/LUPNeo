@@ -7,6 +7,9 @@
         public ServiceLifetimes Lifetime { get; init; }
 
         public IEnumerable<ActivatedMiddleware> ActivatedMiddlewares { get; init; } = Enumerable.Empty<ActivatedMiddleware>();
+
+        //TODO: NonLazy
+        // public bool NonLazy { get; init; }
     }
 
     public class TypedServiceDescriptor : ServiceDescriptor

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Graphics\LUP.Graphics.csproj" />
+    <ProjectReference Include="..\LUP.RenderingBase\LUP.RenderingBase.csproj" />
+    <ProjectReference Include="..\LUP\LUP.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ShaderResouces.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShaderResouces.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Shaders\ShaderResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShaderResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ShaderResouces.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShaderResouces.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shaders\ShaderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShaderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AST\" />
+  </ItemGroup>
+
+</Project>

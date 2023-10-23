@@ -21,7 +21,7 @@ namespace LUP.Client.Input
 
     public interface ICursor
     {
-        CursorStates State { get; set; }   
+        CursorStates State { get; set; }
     }
 
     public enum CursorStates

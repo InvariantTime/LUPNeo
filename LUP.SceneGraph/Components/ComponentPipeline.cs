@@ -1,9 +1,4 @@
 ﻿using LUP.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph.Components
 {
@@ -20,13 +15,13 @@ namespace LUP.SceneGraph.Components
         }
 
 
-        public bool Handle(ComponentContext context, ComponentOperations operation) 
+        public bool Handle(ComponentContext context, ComponentOperations operation)
         {
             try
             {
                 action?.Invoke(context, operation);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error($"Unable to register component {context.Component}", ex);
                 return false;

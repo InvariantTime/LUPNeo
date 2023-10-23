@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LUP.Graphics\LUP.Graphics.csproj" />
+    <ProjectReference Include="..\LUP.Materials\LUP.Rendering.Materials.csproj" />
+    <ProjectReference Include="..\LUP.RenderingBase\LUP.RenderingBase.csproj" />
+    <ProjectReference Include="..\LUP.SceneGraph\LUP.SceneGraph.csproj" />
+    <ProjectReference Include="..\LUP\LUP.csproj" />
+  </ItemGroup>
+
+</Project>

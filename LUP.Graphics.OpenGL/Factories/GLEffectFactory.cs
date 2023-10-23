@@ -1,4 +1,5 @@
-﻿using LUP.Graphics.OpenGL.Effects;
+﻿using LUP.Graphics.Effects;
+using LUP.Graphics.OpenGL.Effects;
 
 namespace LUP.Graphics.OpenGL.Factories
 {

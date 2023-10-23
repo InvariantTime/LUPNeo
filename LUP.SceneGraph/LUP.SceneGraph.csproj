@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Documents\GameEngine\LUP Engine\LUP Engine Math\LUP Engine Math.csproj" />
     <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LUP.Math\LUP.Math.csproj" />
     <ProjectReference Include="..\LUP\LUP.csproj" />
   </ItemGroup>
 

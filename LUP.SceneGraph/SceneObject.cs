@@ -1,5 +1,4 @@
-﻿using LUP.DependencyInjection;
-using LUP.SceneGraph.Components;
+﻿using LUP.SceneGraph.Components;
 using LUP.SceneGraph.Objects;
 
 namespace LUP.SceneGraph

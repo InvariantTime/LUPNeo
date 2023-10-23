@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Graphics\LUP.Graphics.csproj" />
+    <ProjectReference Include="..\LUP.Math\LUP.Math.csproj" />
+    <ProjectReference Include="..\LUP.Rendering.ShaderGeneration\LUP.Rendering.ShaderLanguage.csproj" />
+    <ProjectReference Include="..\LUP.RenderingBase\LUP.RenderingBase.csproj" />
+  </ItemGroup>
+
+</Project>

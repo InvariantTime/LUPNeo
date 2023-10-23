@@ -2,10 +2,10 @@
 
 namespace LUP.Graphics.OpenGL.Effects
 {
-    //TODO: internal
-    public class GLProgram
+    class GLProgram : IDisposable
     {
         private readonly int index;
+        private readonly int[] shaders;
 
         public int Index => index;
 
@@ -18,9 +18,12 @@ namespace LUP.Graphics.OpenGL.Effects
         {
             index = GL.CreateProgram();
             int result;
+            shaders = new int[datas.Count()];
 
-            foreach (var descriptor in datas)
+            for(int i = 0; i < shaders.Length; i++)
             {
+                var descriptor = datas.ElementAt(i);
+
                 int shader = GL.CreateShader(OpenGLConverter.Convert(descriptor.Type));
                 GL.ShaderSource(shader, descriptor.Source);
                 GL.CompileShader(shader);
@@ -34,6 +37,7 @@ namespace LUP.Graphics.OpenGL.Effects
                 }
 
                 GL.AttachShader(index, shader);
+                shaders[i] = shader;
             }
 
             GL.LinkProgram(index);
@@ -58,6 +62,15 @@ namespace LUP.Graphics.OpenGL.Effects
         public static void Unbind()
         {
             GL.UseProgram(0);
+        }
+
+        
+        public void Dispose()
+        {
+            GL.DeleteProgram(Index);
+
+            foreach (var shader in shaders)
+                GL.DeleteShader(shader);
         }
     }
 }

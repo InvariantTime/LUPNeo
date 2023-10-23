@@ -1,15 +1,14 @@
 ﻿using LUP.SceneGraph.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace LUP.SceneGraph.Modules
 {
+    //TODO: async
     public abstract class ComponentWorld<T> : InitializeModule where T : class
     {
         private readonly HashSet<T> components;
+
+        public IReadOnlyCollection<T> Components => components;
 
         public ComponentWorld()
         {

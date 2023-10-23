@@ -1,10 +1,5 @@
 ﻿using LUP.SceneGraph.Components;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph.Objects
 {
@@ -28,7 +23,7 @@ namespace LUP.SceneGraph.Objects
         public bool AddComponent(ComponentBase component)
         {
             var context = new ComponentContext
-            { 
+            {
                 Component = component,
                 Owner = owner
             };
@@ -45,7 +40,7 @@ namespace LUP.SceneGraph.Objects
         public bool RemoveComponent(ComponentBase component)
         {
             var context = new ComponentContext
-            { 
+            {
                 Component = component,
                 Owner = owner
             };
@@ -62,7 +57,7 @@ namespace LUP.SceneGraph.Objects
         public void Destroy()
         {
             var context = new ComponentContext
-            { 
+            {
                 Owner = owner,
                 DestroingObject = true
             };

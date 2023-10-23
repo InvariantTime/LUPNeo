@@ -1,16 +1,13 @@
 ﻿using LUP.SceneGraph.Components;
 using LUP.SceneGraph.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph
 {
     [SingleComponent]
     public sealed partial class TransformComponent : ComponentBase, IObjectProvider
     {
+        internal static readonly TransformComponent Nullable = new();
+
         private IObjectScope? children;
 
         internal TransformComponent()
@@ -35,7 +32,7 @@ namespace LUP.SceneGraph
 
         internal void UninitializeTransform()
         {
-            this.children = null;
+            children = null;
         }
     }
 }

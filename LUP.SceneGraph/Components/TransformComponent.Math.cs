@@ -1,29 +1,55 @@
-﻿using LUP.Mathematics;
+﻿using LUP.Math;
 using LUP.SceneGraph.Components;
 using LUP.SceneGraph.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph
 {
     //TODO: math of transform
     public sealed partial class TransformComponent : ComponentBase, IObjectProvider
     {
+        private Matrix4 localMatrix = Matrix4.Identity;
+        private Matrix4 globalMatrix = Matrix4.Identity;
+
         private bool needUpdateMatrices;
 
-        private Matrix4 local;
-        private Matrix4 inverse;
+        private Vector3 position;
+        private Quaternion rotation = Quaternion.Identity;
+        private Vector3 scale = new Vector3(1, 1, 1);
 
-        public Vector3 Position { get; set; }
+        public Vector3 Position
+        {
+            get => position;
 
-        public Quaternion Rotation { get; set; }
+            set
+            {
+                position = value;
+                needUpdateMatrices = true;
+            }
+        }
 
-        public Vector3 Scale { get; set; }
+        public Quaternion Rotation
+        {
+            get => rotation;
 
-        
+            set
+            {
+                rotation = value;
+                needUpdateMatrices = true;
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get => scale;
+
+            set
+            {
+                scale = value;
+                needUpdateMatrices = true;
+            }
+        }
+
+
         public Matrix4 GetLocalMatrix()
         {
             if (needUpdateMatrices == true)
@@ -32,13 +58,31 @@ namespace LUP.SceneGraph
                 needUpdateMatrices = false;
             }
 
-            return local;
+            return localMatrix;
+        }
+
+
+        public Matrix4 GetGlobalMatrix()
+        {
+            if (needUpdateMatrices == true)
+            {
+                UpdateMatrices();
+                needUpdateMatrices = false;
+            }
+
+            return globalMatrix;
         }
 
 
         private void UpdateMatrices()
         {
-            
+            localMatrix = Matrix4.CreateTranslation(position) * rotation.GetMatrix()
+                * Matrix4.CreateScaling(scale);
+
+            //TODO: global matrix
+            globalMatrix = localMatrix;
+
+            needUpdateMatrices = false;
         }
     }
 }

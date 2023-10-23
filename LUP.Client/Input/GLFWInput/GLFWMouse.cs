@@ -3,7 +3,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace LUP.Client.Input.GLFWInput
 {
-    //TODO: cursor
+    //TODO: cursor image
     unsafe sealed class GLFWMouse : IMouse
     {
         private readonly Window* window;
@@ -74,11 +74,47 @@ namespace LUP.Client.Input.GLFWInput
     {
         private readonly Window* window;
 
-        public CursorStates State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public CursorStates State
+        {
+            get => GLFW.GetInputMode(window, CursorStateAttribute.Cursor).Convert();
+            
+            set => GLFW.SetInputMode(window, CursorStateAttribute.Cursor, value.Convert());
+        }
 
         public GLFWCursor(Window* window)
         {
             this.window = window;
+        }
+    }
+
+    static class CursorConvertExtension
+    {
+        public static CursorStates Convert(this CursorModeValue cursor)
+        {
+            return cursor switch
+            {
+                CursorModeValue.CursorDisabled => CursorStates.Disable,
+
+                CursorModeValue.CursorHidden => CursorStates.Hide,
+
+                CursorModeValue.CursorNormal => CursorStates.Enable,
+
+                _ => throw new NotSupportedException()
+            };
+        }
+
+        public static CursorModeValue Convert(this CursorStates cursor)
+        {
+            return cursor switch
+            {
+                CursorStates.Disable => CursorModeValue.CursorDisabled,
+
+                CursorStates.Hide => CursorModeValue.CursorHidden,
+
+                CursorStates.Enable => CursorModeValue.CursorNormal,
+
+                _ => throw new NotSupportedException()
+            };
         }
     }
 }

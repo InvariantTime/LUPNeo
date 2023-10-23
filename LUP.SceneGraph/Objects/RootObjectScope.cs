@@ -1,12 +1,7 @@
 ﻿using LUP.Logging;
 using LUP.SceneGraph.Descriptors;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph.Objects
 {

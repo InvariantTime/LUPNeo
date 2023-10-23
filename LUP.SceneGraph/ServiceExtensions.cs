@@ -4,11 +4,6 @@ using LUP.SceneGraph.Components;
 using LUP.SceneGraph.Components.Middlewares;
 using LUP.SceneGraph.Modules;
 using LUP.SceneGraph.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.SceneGraph
 {
@@ -70,7 +65,7 @@ namespace LUP.SceneGraph
         {
             services.RegisterType<T>()
                 .As<IComponentMiddleware>().AsSelf()
-                .AsScoped();  
+                .AsScoped();
         }
 
 
@@ -80,7 +75,7 @@ namespace LUP.SceneGraph
                 .As<SceneModule>().AsSelf()
                 .AsScoped();
 
-            if (typeof(IComponentPipelineInitializer).IsAssignableFrom(typeof(T))== true)
+            if (typeof(IComponentPipelineInitializer).IsAssignableFrom(typeof(T)) == true)
             {
                 builder.As<IComponentPipelineInitializer>();
             }
@@ -102,7 +97,7 @@ namespace LUP.SceneGraph
 
         private static IComponentPipeline BuildComponentPipeline(IServiceScope scope)
         {
-            var builder = scope.GetService<ComponentPipelineBuilder>() 
+            var builder = scope.GetService<ComponentPipelineBuilder>()
                 ?? throw new InvalidOperationException("Unable to create pipeline");
 
             return builder.Build();

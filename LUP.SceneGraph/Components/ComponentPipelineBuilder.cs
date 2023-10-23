@@ -33,7 +33,7 @@ namespace LUP.SceneGraph.Components
             });
         }
 
-        
+
         public IComponentPipeline Build()
         {
             ImmutableDictionary<ComponentOperations, Action<ComponentContext>> dic = descriptions

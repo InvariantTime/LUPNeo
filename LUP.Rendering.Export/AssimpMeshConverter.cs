@@ -1,4 +1,5 @@
-﻿using LUP.Graphics.Enums;
+﻿using Assimp;
+using LUP.Graphics.Enums;
 using LUP.Math;
 using LUP.Rendering.Meshing;
 using System;
@@ -27,7 +28,8 @@ namespace LUP.Rendering.Export
 
             for (int i = 0; i < vertices.Length; i++)
             {
-                //   var uv = mesh.TextureCoordinateChannels[0][i];
+                var uv = mesh.TextureCoordinateChannels.Length > 0 ?
+                    mesh.TextureCoordinateChannels[0][i] : new Vector3D();
 
                 var normal = mesh.HasNormals ? mesh.Normals[i].Convert() : Vector3.Zero;
 
@@ -35,7 +37,7 @@ namespace LUP.Rendering.Export
                 {
                     Position = mesh.Vertices[i].Convert(),
                     Normal = normal,
-                    UV = new Vector2()
+                    UV = new Vector2(uv.X, uv.Y)
                 };
             }
 
