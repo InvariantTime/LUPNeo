@@ -6,7 +6,7 @@
 
         private static readonly Dictionary<LogLevel, ConsoleColor> colorsMap = new()
         {
-            [LogLevel.Debug] = ConsoleColor.Gray,
+            [LogLevel.Debug] = ConsoleColor.Blue,
             [LogLevel.Info] = ConsoleColor.White,
             [LogLevel.Warn] = ConsoleColor.Yellow,
             [LogLevel.Error] = ConsoleColor.Red,
