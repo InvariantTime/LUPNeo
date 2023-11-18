@@ -54,7 +54,7 @@ namespace LUP.Client.Input.GLFWInput
             if (action == InputAction.Press)
                 ButtonDown?.Invoke(this, args);
             else if (action == InputAction.Release)
-                ButtonDown?.Invoke(this, args);
+                ButtonRelease?.Invoke(this, args);
         }
 
 
