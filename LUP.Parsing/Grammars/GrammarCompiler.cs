@@ -13,8 +13,8 @@ namespace LUP.Parsing.Grammars
     public static class GrammarCompiler
     {
         private static readonly Lexer lexer = new(GrammarTokenDefinitions.Definitions);
-        private static readonly StackMachineTable table = StackTableReader.Read(GrammarResource.grammar);
-        private static readonly ASTParser<AST.GrammarAST> parser = new(new GrammarParseHandler(), table);
+        private static readonly StackMachineTable table = StackTableReader.Read(GrammarResource.GrammarTable);
+        private static readonly ASTParser<GrammarAST> parser = new(new GrammarASTHandler(), table);
 
         public static Grammar? Compile(string source)
         {

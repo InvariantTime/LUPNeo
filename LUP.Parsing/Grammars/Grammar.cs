@@ -1,11 +1,6 @@
-﻿using LUP.Parsing.Grammars;
-using System;
-using System.Collections.Generic;
+﻿using LUP.Parsing.AST.Expressions;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LUP.Parsing
 {
@@ -56,23 +51,42 @@ namespace LUP.Parsing
 
         public ImmutableArray<string> Tokens { get; }
 
-        public ReduceParam? Param { get; private set; }
+        public IReduceExpression Expression { get; private set; }
 
         public GrammarRule(string result, IEnumerable<string> tokens)
         {
             Result = result;
             Tokens = tokens.ToImmutableArray();
+            Expression = EmptyReduceExpression.Instance;
         }
 
 
-        public void SetParam(ReduceParam param)
+        public GrammarRule(string result, IReduceExpression? param, IEnumerable<string> tokens) : this(result, tokens)
         {
-            Param = param;
+            SetParam(param);
+        }
+
+
+        public void SetParam(IReduceExpression? value)
+        {
+            if (value == null)
+            {
+                Expression = EmptyReduceExpression.Instance;
+                return;
+            }
+
+            Expression = value;
         }
 
         
         public GrammarRule(string result, params string[] tokens) 
             : this(result, tokens.AsEnumerable()) { }
+
+        
+        public GrammarRule(string result, IReduceExpression? expr, params string[] tokens) : this(result, tokens)
+        {
+            SetParam(expr);
+        }
 
 
         public override string ToString()

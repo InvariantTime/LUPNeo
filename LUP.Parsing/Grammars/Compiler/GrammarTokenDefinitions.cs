@@ -15,6 +15,16 @@ namespace LUP.Parsing.Grammars.Compiler
             new TokenDefinition(GrammarTokens.And, @"\|"),
             new TokenDefinition(GrammarTokens.Colon, @":"),
             new TokenDefinition(GrammarTokens.Start, @"\$"),
+            new TokenDefinition(GrammarTokens.Plus, @"\+"),
+            new TokenDefinition(GrammarTokens.Equal, @"="),
+            new TokenDefinition(GrammarTokens.Sharp, @"#"),
+            new TokenDefinition(GrammarTokens.LPar, @"\("),
+            new TokenDefinition(GrammarTokens.RPar, @"\)"),
+            new TokenDefinition(GrammarTokens.Comma, @","),
+            new TokenDefinition(GrammarTokens.Quote, "\""),
+            new TokenDefinition(GrammarTokens.LGener, @"<"),
+            new TokenDefinition(GrammarTokens.RGener, @">"),
+
 
             new TokenDefinition(GrammarTokens.LBlock, @"\{"),
             new TokenDefinition(GrammarTokens.RBlock, @"\}"),
@@ -27,6 +37,7 @@ namespace LUP.Parsing.Grammars.Compiler
             new InvalidTokenDefinition(@"/\\*(.*\\n?)*", "multiline comment must be closed"),
             
             new TokenDefinition(GrammarTokens.ID, @"[a-zA-Z_][a-zA-Z_0-9]*"),
+       //     new TokenDefinition(GrammarTokens.String, @"([^""]+(\s)*)+")
         };
     }
 }

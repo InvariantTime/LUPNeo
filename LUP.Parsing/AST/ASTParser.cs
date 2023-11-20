@@ -1,4 +1,5 @@
-﻿using LUP.Parsing.Grammars;
+﻿using LUP.Parsing.AST.Expressions;
+using LUP.Parsing.Grammars;
 using LUP.Parsing.Parsers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LUP.Parsing.AST
 {
-    public sealed class ASTParser<T> where T : class
+    public sealed class ASTParser<T> where T : class, IASTExpression
     {
         private readonly ASTHandler<T> handler;
         private readonly StackMachineTable table;
@@ -23,7 +24,7 @@ namespace LUP.Parsing.AST
         public T? Parse(IEnumerable<Token> tokens)
         {
             StackMachine machine = new(table);
-            handler.Start();
+            handler.Clear();
 
             bool success = false;
             int index = 0;
@@ -55,28 +56,32 @@ namespace LUP.Parsing.AST
                             return null;
                         }
 
+                        if (result.Param == null)
+                        {
+                            handler.OnError("unable to get reduce expression");
+                            return null;
+                        }
+
                         OnReduce(result.Result, result.Param, result.Reduced);
                         break;
                 }
             }
 
-            return handler.AST;
+            var ast = handler.Pool.FirstOrDefault(x => x.Value is T);
+
+            if (ast.Value == null)
+            {
+                handler.OnError("Grammar must return AST");
+                return null;
+            }
+
+            return ast.Value as T;
         }
 
 
-        private void OnReduce(KeyToken result, ReduceParam? param, KeyToken[] reduced)
+        private void OnReduce(KeyToken result, IReduceExpression expr, KeyToken[] reduced)
         {
-            if (param == null)
-                return;
-
-            KeyToken[] tokens = new KeyToken[param.TokenIndices.Length];
-
-            for(int i = 0; i < tokens.Length; i++)
-            {
-                tokens[i] = reduced[param.TokenIndices[i]];
-            }
-
-            handler.HandleReduce(param.Name, result, tokens);
+            handler.HandleReduce(expr, result, reduced);
         }
     }
 }

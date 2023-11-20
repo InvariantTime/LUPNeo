@@ -1,4 +1,5 @@
 ﻿using LUP.Parsing.Grammars;
+using LUP.Parsing.Parsers.Reading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,6 +106,8 @@ namespace LUP.Parsing.Parsers
             if (rule == null)
                 throw new ArgumentNullException(nameof(rule));
 
+            var reduceWriter = new ReduceWriter(writer);
+
             writer.Write(rule.Result);
             writer.Write(rule.Tokens.Length);
 
@@ -113,16 +116,7 @@ namespace LUP.Parsing.Parsers
                 writer.Write(token);
             }
 
-            writer.Write(rule.Param != null);
-
-            if (rule.Param != null)
-            {
-                writer.Write(rule.Param.Name);
-                writer.Write(rule.Param.TokenIndices.Length);
-
-                foreach (var index in rule.Param.TokenIndices)
-                    writer.Write(index);
-            }
+            reduceWriter.Write(rule.Expression);
         }
 
 
@@ -131,27 +125,17 @@ namespace LUP.Parsing.Parsers
             var result = reader.ReadString();
             int count = reader.ReadInt32();
 
+            var reduceReader = new ReduceReader(reader);
+
             string[] tokens = new string[count];
 
             for (int i = 0; i < count; i++)
                 tokens[i] = reader.ReadString();
 
             var rule = new GrammarRule(result, tokens);
-
-            bool hasParam = reader.ReadBoolean();
-
-            if (hasParam == true)
-            {
-                string name = reader.ReadString();
-                int indexCount = reader.ReadInt32();
-                int[] indices = new int[indexCount];
-
-                for (int i = 0; i < indexCount; i++)
-                    indices[i] = reader.ReadInt32();
-
-                ReduceParam param = new(name, indices);
-                rule.SetParam(param);   
-            }
+           
+            var param = reduceReader.Build();
+            rule.SetParam(param);
 
             return rule;
         }

@@ -1,82 +1,113 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using LUP.Parsing.AST.Standard;
+using System.Collections.Immutable;
 
 namespace LUP.Parsing.AST
 {
     public class ReduceRegister
     {
-        private readonly Dictionary<string, Func<IParserExpression[], IParserExpression?>> reduces;
+        private static readonly Type astExprType = typeof(IASTExpression);
+
+        private readonly List<CallExpression> calls;
+        private readonly Dictionary<string, Type> typesMap;
 
         public ReduceRegister()
         {
-            reduces = new();
+            calls = new();
+            typesMap = new(StandardHandlers.Types);
+
+            foreach (var handler in StandardHandlers.Handlers)
+                AddHandler(handler);
         }
 
 
-        public void Register(string name, Func<IParserExpression[], IParserExpression?> reduce)
+        public void AddHandler(object handler)
         {
-            if (reduce == null)
-                throw new ArgumentNullException(nameof(reduce));
+            var type = handler.GetType();
+            var methods = CallMethodFinder.Find(type);
 
-            reduces.Add(name, reduce);
-        }
-
-
-        public void Register<T1, T2>(string name, Func<T1, T2, IParserExpression?> reduce)
-            where T1 : IParserExpression where T2 : IParserExpression
-        {
-            Register(name, (exprs) =>
+            foreach (var (info, name) in methods)
             {
-                if (exprs.Length != 2)
-                    throw new IndexOutOfRangeException();
-
-                if (exprs[0] is not T1 t1)
-                    throw new InvalidOperationException("Unable to convert");
-
-                if (exprs[1] is not T2 t2)
-                    throw new InvalidOperationException("Unable to convert");
-
-                return reduce(t1, t2);
-            });
+                var call = CallBuilder.Build(handler, name, info);
+                calls.Add(call);
+            }
         }
 
 
-        public void Register<T>(string name, Func<T, IParserExpression?> reduce)
-            where T : IParserExpression
+        public void AddTypeMap(string name, Type type)
         {
-            Register(name, (exprs) =>
+            typesMap.Add(name, type);
+        }
+
+
+        public void AddTypeMapRange(IEnumerable<KeyValuePair<string, Type>> pairs)
+        {
+            foreach (var pair in pairs)
+                typesMap.Add(pair.Key, pair.Value);
+        }
+
+
+        public IASTExpression? Call(string name, string? genericName, params IASTExpression[] args)
+        {
+            Type? generic = null;
+
+            if (genericName != null)
             {
-                if (exprs.Length != 1)
-                    throw new IndexOutOfRangeException();
+                var result = typesMap.TryGetValue(genericName, out generic);
 
-                if (exprs[0] is not T t)
-                    throw new InvalidOperationException("Unable to convert");
+                if (result == false)
+                    throw new InvalidOperationException($"type {genericName} doesnt exist in this context");
+            }
 
-                return reduce(t);
-            });
+            var call = calls.FirstOrDefault(x => FindPredicate(x, generic, name, args));
+
+            if (call == null)
+                return null;
+
+            if (genericName == null)
+                return call.Invoke(args);
+
+            return call.Invoke(generic, args);
         }
-        
 
-        public void Register(string name, Func<IParserExpression?> reduce)
+
+        private static bool FindPredicate(CallExpression call, Type? generic, string name, IASTExpression[] args)
         {
-            Register(name, (exprs) =>
+            if (call.Name != name)
+                return false;
+
+            if (call.Args.Length != args.Length)
+                return false;
+
+            for (int i = 0; i < args.Length; i++)
             {
-                if (exprs.Length != 0)
-                    throw new IndexOutOfRangeException();
+                var type = call.Args[i].IsGeneric == true ? generic! : call.Args[i].ArgumentType;
 
-                return reduce();
-            });
-        }
+                if (astExprType.IsAssignableFrom(type) == false)
+                {
+                    if (args[i] is not IValueExpression vl)
+                        return false;
 
+                    if (type.IsAssignableFrom(vl.ValueType) == false)
+                        return false;
+                }
+                else
+                {
+                    var arg = args[i].GetType();
 
-        public Func<IParserExpression[], IParserExpression?>? GetReduce(string name)
-        {
-            reduces.TryGetValue(name, out var result);
-            return result;
+                    if (type.IsGenericTypeDefinition == true)
+                    {
+                        if (arg.IsGenericType == false)
+                            return false;
+
+                        if (type.IsAssignableFrom(arg.GetGenericTypeDefinition()) == false)
+                            return false;
+                    }
+                    else if (type.IsAssignableFrom(arg) == false)
+                        return false;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LUP.Parsing;
+using LUP.Parsing.AST.Expressions;
 using LUP.Parsing.Grammars;
 using System.Text;
 
@@ -75,7 +76,7 @@ namespace LUP.Parsing.Parsers
                         tokenIndex++;
 
                         stack.Push(new(state));
-                        return new(resultToken, action.Rule.Param, reducedTokens);
+                        return new(resultToken, action.Rule.Expression, reducedTokens);
 
                     case MachineActionTypes.Error:
                         throw new Exception($"invalid token encountered: {token.Value}");
@@ -104,7 +105,7 @@ namespace LUP.Parsing.Parsers
 
         public KeyToken[]? Reduced { get; }
 
-        public ReduceParam? Param { get; }
+        public IReduceExpression? Param { get; }
 
         public TokenHandleResult(HandleCodes code)
         {
@@ -120,7 +121,7 @@ namespace LUP.Parsing.Parsers
         }
 
 
-        public TokenHandleResult(KeyToken result, ReduceParam? param, KeyToken[] tokens)
+        public TokenHandleResult(KeyToken result, IReduceExpression? param, KeyToken[] tokens)
         {
             Code = HandleCodes.Reduce;
             Error = string.Empty;

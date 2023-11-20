@@ -63,9 +63,9 @@ namespace LUP.Parsing.Grammars {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static byte[] grammar {
+        internal static byte[] GrammarTable {
             get {
-                object obj = ResourceManager.GetObject("grammar", resourceCulture);
+                object obj = ResourceManager.GetObject("GrammarTable", resourceCulture);
                 return ((byte[])(obj));
             }
         }

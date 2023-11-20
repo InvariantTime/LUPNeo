@@ -1,4 +1,5 @@
-﻿using LUP.Parsing.Parsers;
+﻿using LUP.Parsing.AST.Expressions;
+using LUP.Parsing.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +8,19 @@ using System.Threading.Tasks;
 
 namespace LUP.Parsing.AST
 {
-    public abstract class ASTHandler<T> where T : class
+    public abstract class ASTHandler<T> where T : class, IASTExpression
     {
-        private T? ast;
-
         private readonly ReduceRegister register;
-        private readonly Dictionary<KeyToken, IParserExpression> expressions;
+        private readonly ReducePool pool;
 
-        public T AST => ast ?? throw new Exception("AST is not initialized");
+        public ReducePool Pool => pool;
 
         public ASTHandler()
         {
             register = new();
-            expressions = new();
+            pool = new();
 
-            RegistReduces(register);
+            RegistHandlers(register);
         }
 
 
@@ -35,48 +34,36 @@ namespace LUP.Parsing.AST
         }
 
 
-        public void HandleReduce(string name, KeyToken result, KeyToken[] tokens)
+        public void HandleReduce(IReduceExpression expression, KeyToken result, KeyToken[] tokens)
         {
-            var reduce = register.GetReduce(name);
-
-            if (reduce == null)
+            if (expression is EmptyReduceExpression)
                 return;
 
-            IParserExpression[] exprs = new IParserExpression[tokens.Length];
-
-            for (int i = 0; i < tokens.Length; i++)
+            var context = new ReduceContext
             {
-                if (tokens[i].IsTerminal == true)
-                {
-                    exprs[i] = new TokenExpression(tokens[i]);
-                    continue;
-                }
+                Pool = pool,
+                Register = register,
+                Tokens = tokens,
+                ResultToken = result
+            };
 
-                bool hasExpr = expressions.TryGetValue(tokens[i], out var e);
-
-                if (hasExpr == false)
-                    throw new InvalidOperationException("Unable to get expression");
-
-                exprs[i] = e!;
+            try
+            {
+                expression.Handle(context);
             }
-
-            var expr = reduce.Invoke(exprs);
-
-            if (expr != null)
-                expressions.Add(result, expr);
+            catch(Exception ex)
+            {
+                OnError(ex.Message);
+            }
         }
 
 
-        public void Start()
+        public void Clear()
         {
-            expressions.Clear();
-            ast = CreateAST();
+            pool.Clear();
         }
 
 
-        protected abstract void RegistReduces(ReduceRegister register);
-
-
-        public abstract T? CreateAST();
+        protected abstract void RegistHandlers(ReduceRegister register);
     }
 }

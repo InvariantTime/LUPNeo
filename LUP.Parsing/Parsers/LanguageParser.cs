@@ -1,4 +1,5 @@
 ﻿using LUP.Parsing;
+using LUP.Parsing.AST.Expressions;
 using LUP.Parsing.Grammars;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,12 @@ namespace LUP.Parsing.Parsers
                         if (result.Reduced == null)
                             throw new InvalidOperationException("reduced cannot be empty");
 
+                        if (result.Param == null)
+                        {
+                            OnErrorThrow("Unable to get reduce expression");
+                            return false;
+                        }
+
                         OnReduce(result.Result, result.Param, result.Reduced);
                         break;
                 }
@@ -58,7 +65,7 @@ namespace LUP.Parsing.Parsers
         }
 
 
-        protected virtual void OnReduce(KeyToken result, ReduceParam? param, KeyToken[] reduced)
+        protected virtual void OnReduce(KeyToken result, IReduceExpression expression, KeyToken[] reduced)
         {
         }
 
