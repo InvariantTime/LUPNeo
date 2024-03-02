@@ -69,7 +69,8 @@ namespace LUP.SceneGraph
         }
 
 
-        public static void AddModule<T>(this IServiceCollection services) where T : SceneModule
+        public static IRegistrationBuilder<T, ImplementRegistrationData<T>> 
+            AddModule<T>(this IServiceCollection services) where T : SceneModule
         {
             var builder = services.RegisterType<T>()
                 .As<SceneModule>().AsSelf()
@@ -83,6 +84,8 @@ namespace LUP.SceneGraph
             {
                 builder.As<IComponentMiddleware>();
             }
+
+            return builder;
         }
 
 
