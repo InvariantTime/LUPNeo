@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LUP.Rendering.Language\LUP.Rendering.Language.csproj" />
+    <ProjectReference Include="..\LUP.Rendering.ShaderLanguage.OpenGL\LUP.Rendering.Language.Generation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Templates\ShaderTemplates.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShaderTemplates.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Templates\ShaderTemplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShaderTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
