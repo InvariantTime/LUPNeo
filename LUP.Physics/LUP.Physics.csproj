@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Math\LUP.Math.csproj" />
+  </ItemGroup>
+
 </Project>
