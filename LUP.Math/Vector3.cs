@@ -38,7 +38,12 @@
 
         public Vector3 Normalize()
         {
-            return new Vector3(X, Y, Z) / GetLength();
+            float length = GetLength();
+
+            if (length == 0)
+                return Vector3.Zero;
+
+            return new Vector3(X, Y, Z) / length;
         }
 
 
