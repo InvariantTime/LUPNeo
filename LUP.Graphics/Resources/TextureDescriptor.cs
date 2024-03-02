@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace LUP.Graphics
 {
-    public struct GraphicsStencil
+    public struct TextureDescriptor
     {
-        public bool Enable { get; set; }
     }
 }

@@ -18,12 +18,8 @@
 
         Quads = 7,
 
-        QuadsExt = 7,
-
         QuadStrip = 8,
 
         Polygon = 9,
-
-        LinesAdjacency = 10,
     }
 }

@@ -1,6 +1,8 @@
 ﻿using LUP.Client;
 using LUP.DependencyInjection;
 using LUP.DependencyInjection.Builder;
+using LUP.Graphics.OpenGL.Commanding;
+using LUP.Graphics.OpenGL.Resources;
 
 namespace LUP.Graphics.OpenGL
 {
@@ -12,22 +14,18 @@ namespace LUP.Graphics.OpenGL
         }
 
 
-        public static void AddOpenGL(this IServiceCollection services, Action<GraphicsOptions> optionAction)
+        public static void AddOpenGL(this IServiceCollection services, Action<GLOptions> optionAction)
         {
-            services.RegisterType<OpenGLRenderer>()
-                .As<IWindowRenderer>().As<IRenderTarget>()
-                .As<IGlobalRenderTarget>()
-                .AsSelf().AsSingleton();
+            services.AddGraphicsDevice<GraphicsCommandList, OpenGLFactory>();
+            services.RegisterType<OpenGLRenderer>().As<IWindowRenderer>();
+        }
+    }
 
-            services.RegisterType<OpenGLDevice>()
-                .AsSelf().As<IGraphicsDevice>()
-                .AsSingleton();
+    public class GLOptions
+    {
+        public GLOptions()
+        {
 
-            services.RegisterType<CommandList>()
-                .AsSelf().As<IGraphicsCommandList>()
-                .AsSingleton();
-
-            services.Configure(optionAction);
         }
     }
 }

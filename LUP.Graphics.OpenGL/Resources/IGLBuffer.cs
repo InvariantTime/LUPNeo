@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LUP.Graphics
+namespace LUP.Graphics.OpenGL.Resources
 {
-    public struct GraphicsStencil
+    public interface IGLBuffer
     {
-        public bool Enable { get; set; }
+        void Update(BufferData data, int offset);
     }
 }

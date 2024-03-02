@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LUP.Graphics
+namespace LUP.Initializers
 {
-    public struct GraphicsStencil
+    public abstract class LUPInitializer
     {
-        public bool Enable { get; set; }
+        public abstract void Initialize();
     }
 }

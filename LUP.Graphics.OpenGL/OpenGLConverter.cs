@@ -1,5 +1,4 @@
-﻿using LUP.Graphics.Effects;
-using LUP.Graphics.Enums;
+﻿using LUP.Graphics.Enums;
 using OpenTK.Graphics.OpenGL;
 
 namespace LUP.Graphics.OpenGL
@@ -21,6 +20,35 @@ namespace LUP.Graphics.OpenGL
                 TextureTypes.TextureArray => TextureTarget.Texture2DArray,
 
                 _ => throw new NotSupportedException()
+            };
+        }
+
+
+        public static PrimitiveType Convert(PrimitiveTypes type)
+        {
+            return type switch
+            {
+                PrimitiveTypes.Triangles => PrimitiveType.Triangles,
+              
+                PrimitiveTypes.TriangleStrip => PrimitiveType.TriangleStrip,
+
+                PrimitiveTypes.TriangleFan => PrimitiveType.TriangleFan,
+                
+                PrimitiveTypes.Lines => PrimitiveType.Lines,
+                
+                PrimitiveTypes.LineLoop => PrimitiveType.LineLoop,
+                
+                PrimitiveTypes.LineStrip => PrimitiveType.LineStrip,
+
+                PrimitiveTypes.QuadStrip => PrimitiveType.QuadStrip,
+
+                PrimitiveTypes.Quads => PrimitiveType.Quads,
+                
+                PrimitiveTypes.Points => PrimitiveType.Points,
+
+                PrimitiveTypes.Polygon => PrimitiveType.Polygon,
+
+                _ => throw new NotImplementedException()
             };
         }
 
@@ -183,47 +211,68 @@ namespace LUP.Graphics.OpenGL
         }
 
 
-        public static EffectUniformTypes Convert(ActiveUniformType type)
+        public static ShaderUniformTypes Convert(ActiveUniformType type)
         {
             return type switch
             {
-                ActiveUniformType.Int => EffectUniformTypes.Int,
+                ActiveUniformType.Int => ShaderUniformTypes.Int,
 
-                ActiveUniformType.Float => EffectUniformTypes.Float,
+                ActiveUniformType.Float => ShaderUniformTypes.Float,
 
-                ActiveUniformType.Double => EffectUniformTypes.Double,
+                ActiveUniformType.Double => ShaderUniformTypes.Double,
 
-                ActiveUniformType.Bool => EffectUniformTypes.Bool,
+                ActiveUniformType.Bool => ShaderUniformTypes.Bool,
 
-                ActiveUniformType.UnsignedInt => EffectUniformTypes.Uint,
+                ActiveUniformType.UnsignedInt => ShaderUniformTypes.Uint,
 
-                ActiveUniformType.FloatVec2 => EffectUniformTypes.Vec2,
+                ActiveUniformType.FloatVec2 => ShaderUniformTypes.Vec2,
 
-                ActiveUniformType.IntVec2 => EffectUniformTypes.IVec2,
+                ActiveUniformType.IntVec2 => ShaderUniformTypes.IVec2,
 
-                ActiveUniformType.DoubleVec2 => EffectUniformTypes.DVec2,
+                ActiveUniformType.DoubleVec2 => ShaderUniformTypes.DVec2,
 
-                ActiveUniformType.UnsignedIntVec2 => EffectUniformTypes.UVec2,
+                ActiveUniformType.UnsignedIntVec2 => ShaderUniformTypes.UVec2,
 
-                ActiveUniformType.FloatVec3 => EffectUniformTypes.Vec3,
+                ActiveUniformType.FloatVec3 => ShaderUniformTypes.Vec3,
 
-                ActiveUniformType.IntVec3 => EffectUniformTypes.IVec3,
+                ActiveUniformType.IntVec3 => ShaderUniformTypes.IVec3,
 
-                ActiveUniformType.DoubleVec3 => EffectUniformTypes.DVec3,
+                ActiveUniformType.DoubleVec3 => ShaderUniformTypes.DVec3,
 
-                ActiveUniformType.UnsignedIntVec3 => EffectUniformTypes.UVec3,
+                ActiveUniformType.UnsignedIntVec3 => ShaderUniformTypes.UVec3,
 
-                ActiveUniformType.FloatVec4 => EffectUniformTypes.Vec4,
+                ActiveUniformType.FloatVec4 => ShaderUniformTypes.Vec4,
 
-                ActiveUniformType.IntVec4 => EffectUniformTypes.IVec4,
+                ActiveUniformType.IntVec4 => ShaderUniformTypes.IVec4,
 
-                ActiveUniformType.DoubleVec4 => EffectUniformTypes.DVec4,
+                ActiveUniformType.DoubleVec4 => ShaderUniformTypes.DVec4,
 
-                ActiveUniformType.UnsignedIntVec4 => EffectUniformTypes.UVec4,
+                ActiveUniformType.UnsignedIntVec4 => ShaderUniformTypes.UVec4,
 
-                ActiveUniformType.FloatMat4 => EffectUniformTypes.Mat4,
+                ActiveUniformType.FloatMat4 => ShaderUniformTypes.Mat4,
 
-                _ => EffectUniformTypes.None
+                _ => ShaderUniformTypes.None
+            };
+        }
+
+
+        public static VertexAttribPointerType Convert(VertexAttribPointerTypes type)
+        {
+            return type switch
+            {
+                VertexAttribPointerTypes.Float => VertexAttribPointerType.Float,
+                VertexAttribPointerTypes.Double => VertexAttribPointerType.Double,
+                VertexAttribPointerTypes.Short => VertexAttribPointerType.Short,
+                VertexAttribPointerTypes.Byte => VertexAttribPointerType.Short,
+                VertexAttribPointerTypes.Int => VertexAttribPointerType.Int,
+               
+                VertexAttribPointerTypes.UnsignedInt => VertexAttribPointerType.UnsignedInt,
+                VertexAttribPointerTypes.UnsignedByte => VertexAttribPointerType.UnsignedByte,
+                VertexAttribPointerTypes.UnsignedShort => VertexAttribPointerType.UnsignedShort,
+
+                VertexAttribPointerTypes.HalfFloat => VertexAttribPointerType.HalfFloat,
+
+                _ => throw new NotImplementedException()
             };
         }
 
@@ -250,6 +299,23 @@ namespace LUP.Graphics.OpenGL
 
                 _ => throw new NotImplementedException()
             };
+        }
+
+
+        public static ClearBufferMask Convert(ClearMask mask)
+        {
+            ClearBufferMask result = default;
+
+            if (mask.HasFlag(ClearMask.Depth) == true)
+                result |= ClearBufferMask.DepthBufferBit;
+
+            if (mask.HasFlag(ClearMask.Color) == true)
+                result |= ClearBufferMask.ColorBufferBit;
+
+            if (mask.HasFlag(ClearMask.Stencil) == true)
+                result |= ClearBufferMask.StencilBufferBit;
+
+            return result;
         }
     }
 }

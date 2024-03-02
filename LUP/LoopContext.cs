@@ -2,11 +2,11 @@
 {
     public class LoopContext
     {
-        public CancellationToken Cancellation { get; }
+        public CancellationTokenSource Cancellation { get; }
 
-        public LoopContext(CancellationToken token)
+        public LoopContext(CancellationTokenSource cancellation)
         {
-            Cancellation = token;
+            Cancellation = cancellation;
         }
     }
 }

@@ -20,6 +20,13 @@ namespace LUP.Graphics
         public bool WriteEnable { get; set; }
 
         public DepthFunctions Function { get; set; }
+
+        public GraphicsDepth()
+        {
+            Enable = true;
+            WriteEnable = true;
+            Function = DepthFunctions.Less;
+        }
     }
 
 

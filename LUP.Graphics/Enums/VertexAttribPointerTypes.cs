@@ -2,30 +2,22 @@
 {
     public enum VertexAttribPointerTypes
     {
-        Byte = 5120,
+        Byte = 0,
 
-        UnsignedByte = 5121,
+        UnsignedByte = 1,
 
-        Short = 5122,
+        Short = 2,
 
-        UnsignedShort = 5123,
+        UnsignedShort = 3,
 
-        Int = 5124,
+        Int = 4,
 
-        UnsignedInt = 5125,
+        UnsignedInt = 5,
 
-        Float = 5126,
+        Float = 6,
 
-        Double = 5130,
+        Double = 7,
 
-        HalfFloat = 5131,
-
-        Fixed = 5132,
-
-        UnsignedInt2101010Rev = 33640,
-
-        UnsignedInt10F11F11FRev = 35899,
-
-        Int2101010Rev = 36255
+        HalfFloat = 8,
     }
 }
