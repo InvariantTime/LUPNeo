@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,27 +12,42 @@ namespace LUP.Rendering.ShaderLanguage
         public static readonly string None = string.Empty;
 
         //KeyWords
-        public static readonly string Void = "VOID";
+        public static readonly string Namespace = "NAMESPACE";
+
+        public static readonly string Shader = "SHADER";
+
+        public static readonly string CBuffer = "CBUFFER";
+
+        public static readonly string Param = "PARAM";
+
+        public static readonly string Using = "USING";
+
+        public static readonly string Attribute = "ATTRIB";
+
+        public static readonly string Final = "FINAL";
+
+        public static readonly string Static = "STATIC";
 
         public static readonly string If = "IF";
 
         public static readonly string Else = "ELSE";
 
-        public static readonly string Namespace = "NAMESPACE";
-
-        public static readonly string Shader = "SHADER";
-
-        public static readonly string For = "FOR";
-
         public static readonly string While = "WHILE";
 
-        public static readonly string Break = "BREAK";
+        public static readonly string For = "For";
 
-        public static readonly string Return = "RETERUN";
+        public static readonly string Return = "RETURN";
 
-        public static readonly string Continue = "CONTINUE";
+        //Shader types
+        public static readonly string Pixel = "PIXEL";
 
-        public static readonly string Cbuffer = "CBUFFER";
+        public static readonly string Vertex = "VERTEX";
+
+        public static readonly string Geometry = "GEOMETRY";
+
+        public static readonly string Compute = "COMPUTE";
+
+        public static readonly string Tessellation = "TESS";
 
         //Brackets
         public static readonly string LBlock = "LBLOCK";
@@ -57,11 +73,11 @@ namespace LUP.Rendering.ShaderLanguage
 
         public static readonly string Minus = "MINUS";
 
-        public static readonly string Eql = "EQL";
+        public static readonly string Equal = "EQUAL";
 
-        public static readonly string LEql = "LEQL";
+        public static readonly string Less = "LESS";
 
-        public static readonly string GEql = "GEQL";
+        public static readonly string Greater = "GRTR";
 
         //Values
         public static readonly string Id = "ID";
