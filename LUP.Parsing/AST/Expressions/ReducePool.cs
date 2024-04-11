@@ -3,7 +3,6 @@ using System.Collections;
 
 namespace LUP.Parsing.AST.Expressions
 {
-    //TODO: Disposable?
     public sealed class ReducePool : IEnumerable<KeyValuePair<KeyToken, IASTExpression>>
     {
         private readonly Dictionary<KeyToken, IASTExpression> expressions;

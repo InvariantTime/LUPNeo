@@ -1,4 +1,6 @@
-﻿using LUP.Parsing.AST;
+﻿#pragma warning disable CA1822
+
+using LUP.Parsing.AST;
 using LUP.Parsing.Grammars.AST;
 
 namespace LUP.Parsing.Grammars.Compiler

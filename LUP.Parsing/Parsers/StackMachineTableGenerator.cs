@@ -1,26 +1,39 @@
-﻿using LUP.Parsing;
-using System.Collections.Immutable;
-using System.Text;
+﻿using LUP.Parsing.Grammars;
 
 namespace LUP.Parsing.Parsers
 {
     public class StackMachineTableGenerator
     {
-        private readonly ImmutableArray<GrammarRule> rules;
-        private readonly ImmutableArray<string> terminals;
-        private readonly ImmutableArray<string> tokens;
         private readonly Dictionary<(LRSList, string), LRSList> gotos;
-        private readonly string start;
+        private readonly IDictionary<string, IEnumerable<string>> firstList;
+        private readonly IDictionary<string, IEnumerable<string>> followList;
+        private readonly Grammar grammar;
 
         private int index;
 
-        public StackMachineTableGenerator(Grammar grammar)
+        private StackMachineTableGenerator(Grammar grammar,
+            IDictionary<string, IEnumerable<string>> firstList, 
+            IDictionary<string, IEnumerable<string>> followList)
         {
-            start = $"{grammar.FinalToken}'";
-            rules = grammar.Rules.Add(new GrammarRule(start, new string[] { grammar.FinalToken }));
-            tokens = grammar.Tokens.Add(start).Add(Lexer.End);
-            terminals = grammar.Terminals.Add(Lexer.End);
+            this.grammar = grammar;
+            this.firstList = firstList;
+            this.followList = followList;
+
             gotos = new();
+        }
+
+
+        public static StackMachineTableGenerator Create(Grammar grammar)
+        {
+            var start = $"{grammar.FinalToken}'";
+            var rules = grammar.Rules.Add(new GrammarRule(start, new string[] { grammar.FinalToken }));
+            var tokens = grammar.Tokens.Add(start).Add(Lexer.End);
+
+            var newGrammar = new Grammar(rules, tokens, start);
+            var firstList = new GrammarFirstBuilder(newGrammar).Build();
+            var followList = new GrammarFollowBuilder(firstList, newGrammar).Build();
+
+            return new StackMachineTableGenerator(newGrammar, firstList, followList);
         }
 
 
@@ -35,9 +48,9 @@ namespace LUP.Parsing.Parsers
             {
                 var list = items.First(x => x.Index == i);
 
-                foreach (var a in tokens)
+                foreach (var a in grammar.Tokens)
                 {
-                    if (GrammarFunctions.IsTerminal(a, terminals) == false)
+                    if (grammar.IsNonTerminal(a) == true)
                     {
                         gotos.TryGetValue((list, a), out var g);
 
@@ -49,9 +62,9 @@ namespace LUP.Parsing.Parsers
                         var shift = list.FirstOrDefault(x => x.GetMark() == a);
 
                         var reduce = list.FirstOrDefault(x => x.Success == true && x.Chain == a
-                                             && x.Rule.Result != start);
+                                             && x.Rule.Result != grammar.FinalToken);
                         var accept = list.FirstOrDefault(x => x.Success == true &&
-                                                x.Chain == Lexer.End && x.Rule.Result == start);
+                                                x.Chain == Lexer.End && x.Rule.Result == grammar.FinalToken);
 
                         if (shift != null)
                         {
@@ -88,7 +101,7 @@ namespace LUP.Parsing.Parsers
                 if (s.Success == true)
                     continue;
 
-                foreach (var rule in rules)
+                foreach (var rule in grammar.Rules)
                 {
                     if (rule.Result == s.GetMark())
                     {
@@ -100,20 +113,11 @@ namespace LUP.Parsing.Parsers
                         }
                         else
                         {
-                            first = GrammarFunctions.First(s.Rule.Tokens[s.Index + 1], rules, terminals);
+                            firstList.TryGetValue(s.Rule.Tokens[s.Index + 1], out var result);
+                            first = result ?? Enumerable.Empty<string>();
                         }
 
-                        foreach (var f in first)
-                        {
-                            if (list.FirstOrDefault(x => x.Rule == rule 
-                                && x.Index == 0 && x.Chain == f) != null)
-                                continue;
-
-                            list.Add(new LRSituation(rule, 0)
-                            {
-                                Chain = f
-                            });
-                        }
+                        AddSituations(list, rule, first);
                     }
                 }
             }
@@ -138,7 +142,6 @@ namespace LUP.Parsing.Parsers
             if (situations.Count == 0)
                 return null;
 
-
             var result = new LRSList(index, situations);
             Close(result);
 
@@ -157,7 +160,7 @@ namespace LUP.Parsing.Parsers
             index = 1;
             gotos.Clear();
 
-            LRSList start = new(0, new LRSituation(rules.Last(), 0));
+            LRSList start = new(0, new LRSituation(grammar.Rules.Last(), 0));
             List<LRSList> lists = new()
             {
                 start
@@ -167,7 +170,7 @@ namespace LUP.Parsing.Parsers
 
             for (int i = 0; i < lists.Count; i++)
             {
-                foreach (var token in tokens)
+                foreach (var token in grammar.Tokens)
                 {
                     var g = Goto(token, lists[i], lists);
 
@@ -182,6 +185,32 @@ namespace LUP.Parsing.Parsers
             }
 
             return lists;
+        }
+
+
+        private void AddSituations(LRSList list, GrammarRule rule, IEnumerable<string> firsts)
+        {
+            foreach (var f in firsts)
+            {
+                if (f == string.Empty)
+                {
+                    followList.TryGetValue(rule.Result, out var follows);
+
+                    if (follows != null)
+                        AddSituations(list, rule, follows);
+
+                    return;
+                }
+
+                if (list.FirstOrDefault(x => x.Rule == rule
+                    && x.Index == 0 && x.Chain == f) != null)
+                    continue;
+
+                list.Add(new LRSituation(rule, 0)
+                {
+                    Chain = f
+                });
+            }
         }
     }
 }

@@ -32,6 +32,7 @@ namespace LUP.Parsing.Parsers
 
                 int state = value.State;
                 var action = table.GetAction(state, token.Type);
+
                 switch (action.Type)
                 {
                     case MachineActionTypes.Accept:

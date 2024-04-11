@@ -18,5 +18,17 @@ namespace LUP.Parsing.AST.Standard
 
             return value;
         }
+
+
+        [GrammarCall("toBool")]
+        public bool ToBool(string str)
+        {
+            return str switch
+            {
+                "true" => true,
+                "false" => false,
+                _ => throw new ArgumentException($"Unable to cast {str} to bool")
+            };
+        }
     }
 }
