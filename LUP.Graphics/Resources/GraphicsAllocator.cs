@@ -1,15 +1,25 @@
 ﻿using LUP.Graphics.Resources;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.Graphics
 {
-    public sealed class GraphicsAllocator
+    public interface IGraphicsAllocator
+    {
+        GraphicsResource BuildShader(ShaderDescriptor descriptor);
+
+        GraphicsResource BuildTexture(TextureDescriptor descriptor);
+
+        GraphicsResource BuildBuffer(DataBufferDescriptor descriptor);
+
+        GraphicsResource BuildRenderTarget(RenderTargetDescriptor descriptor);
+
+        GraphicsResource BuildConstantBuffer(ConstantBufferDescriptor descriptor);
+
+        void DestroyResource(GraphicsResource resource);
+    }
+
+
+    sealed class GraphicsAllocator : IGraphicsAllocator
     {
         private static uint currentIndex = 1;
 

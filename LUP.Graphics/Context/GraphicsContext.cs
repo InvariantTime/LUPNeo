@@ -24,6 +24,12 @@ namespace LUP.Graphics
         }
 
 
+        public void AddCommand<T1, T2>(uint command, T1 data1, T2 data2)
+        {
+            commands.Enqueue(new GraphicsCommand(command, new ValueTuple<T1, T2>(data1, data2)));
+        }
+
+
         public void ResetCommands()
         {
             commands.Clear();

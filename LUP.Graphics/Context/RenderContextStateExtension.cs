@@ -15,10 +15,18 @@ namespace LUP.Graphics
         }
 
 
+        public static void SetShaderUniform(this GraphicsContext context, ShaderUniform uniform, ValueType value)
+        {
+            context.AddCommand(GraphicsCommands.SetUniform, uniform, value);
+        }
+
+
         public static void BindConstantsToShader(this GraphicsContext context, ShaderConstantBinding binding)
         {
             context.AddCommand(GraphicsCommands.BindShaderToConstantBuffer, binding);
         }
+
+
 
 
         public static void SetGraphicsState(this GraphicsContext context, GraphicsState state)
@@ -28,6 +36,18 @@ namespace LUP.Graphics
 
 
         //Textures
+        public static void BindTexture(this GraphicsContext context, GraphicsResource resource)
+        {
+            context.AddCommand(GraphicsCommands.BindTexture, resource);
+        }
+
+
+        public static void UnbindTexture(this GraphicsContext context, GraphicsResource resource)
+        {
+            context.AddCommand(GraphicsCommands.UnbindTexture, resource);
+        }
+
+
         public static void SetTextureIndex(this GraphicsContext context, uint index)
         {
             //TODO

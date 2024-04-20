@@ -8,17 +8,20 @@ namespace LUP.Graphics
         private readonly Action<GraphicsCommand> resolver;
         private readonly IResourceFactory factory;
         private readonly ILogger<GraphicsDevice> logger;
+        private readonly GraphicsAllocator allocator;
 
-        public GraphicsDevice(IGraphicsCommandList list, IResourceFactory factory, ILogger<GraphicsDevice> logger)
+        public GraphicsDevice(IGraphicsCommandList list, IResourceFactory factory,
+            ILogger<GraphicsDevice> logger)
         {
             this.factory = factory;
             this.logger = logger;
 
             resolver = CommandResolverBuilder.Build(list);
+            allocator = new();
         }
 
 
-        public void Dispatch(GraphicsContext context, GraphicsAllocator allocator)
+        public void Dispatch(GraphicsContext context)
         {
             allocator.Execute(factory);
 
@@ -37,10 +40,9 @@ namespace LUP.Graphics
         }
 
 
-        public void Dispatch(GraphicsAllocator allocator)
+        public IGraphicsAllocator GetAllocator()
         {
-            allocator.Execute(factory);
-            allocator.Clear();
+            return allocator;
         }
     }
 }

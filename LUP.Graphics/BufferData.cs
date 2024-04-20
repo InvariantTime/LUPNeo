@@ -31,17 +31,8 @@ namespace LUP.Graphics
 
         public static BufferData Create<T>(T[] array, int size) where T : struct
         {
-            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            
-            try
-            {
-                return new(handle.AddrOfPinnedObject(), size);
-            }
-            finally
-            {
-                if (handle.IsAllocated == true)
-                    handle.Free();
-            }
+            var ptr = PinnedBuffer.Alloc(array);
+            return new(ptr, size);
         }
 
 
@@ -69,6 +60,7 @@ namespace LUP.Graphics
 
         public void Dispose()
         {
+            PinnedBuffer.Free(Pointer);
             Marshal.FreeHGlobal(Pointer);
         }
     }

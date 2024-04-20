@@ -16,6 +16,14 @@ namespace LUP.Graphics
 
             services.RegisterType<TFactory>().AsSelf()
                 .As<IResourceFactory>().AsSingleton();
+
+            services.RegisterFactory(x =>
+            {
+                var device = x.GetService<GraphicsDevice>();
+
+                return device?.GetAllocator()
+                        ?? throw new InvalidOperationException("Unable to get current graphics device");
+            }).AsSelf().AsSingleton();
         }
     }
 }
