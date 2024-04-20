@@ -1,19 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.Graphics.OpenGL.Resources
 {
     class GLShader : GLResource
     {
-        private readonly ImmutableDictionary<string, Uniform> uniforms;
+        private readonly ImmutableDictionary<string, int> uniforms;
         private readonly int index;
 
-        public GLShader(IDictionary<string, Uniform> uniforms, int index)
+        public GLShader(IDictionary<string, int> uniforms, int index)
         {
             this.index = index;
             this.uniforms = uniforms.ToImmutableDictionary();
@@ -38,14 +33,14 @@ namespace LUP.Graphics.OpenGL.Resources
         }
 
         
-        public void SetUniform(string name, ValueType value)
+        public void SetUniform(ShaderUniform uniform, ValueType value)
         {
-            bool result = uniforms.TryGetValue(name, out var uniform);
+            bool result = uniforms.TryGetValue(uniform.Name, out int index);
 
             if (result == false)
-                throw new Exception($"Uknown uniform name: {name}");
+                throw new Exception($"Uknown uniform name: {uniform.Name}");
 
-            uniform.Accessor.Invoke(uniform.Location, value);
+            ShaderUniformDelegateInstance.Instance.Invoke(index, uniform.Type, value);
         }
 
 
@@ -60,14 +55,5 @@ namespace LUP.Graphics.OpenGL.Resources
         {
             return index;
         }
-    }
-
-    public readonly struct Uniform
-    {
-        public int Location { get; init; }
-
-        public ActiveUniformType Type { get; init; }
-
-        public Action<int, ValueType> Accessor { get; init; }
     }
 }

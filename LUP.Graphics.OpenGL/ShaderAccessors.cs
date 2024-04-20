@@ -106,7 +106,5 @@ namespace LUP.Graphics.OpenGL
         {
           //  GL.UniformMatrix4(location, false, );
         }
-
-
     }
 }

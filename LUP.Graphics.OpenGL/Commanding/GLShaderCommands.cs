@@ -7,6 +7,7 @@ namespace LUP.Graphics.OpenGL.Commanding
     class GLShaderCommands : ShaderCommands
     {
         private readonly OpenGLFactory resources;
+        private GLShader? currentShader;
 
         public GLShaderCommands(OpenGLFactory resources)
         {
@@ -20,7 +21,12 @@ namespace LUP.Graphics.OpenGL.Commanding
                 throw new InvalidOperationException($"{shader} is not shader");
 
             var res = resources.GetResource(shader);
-            res?.Bind();
+
+            if (res != null && res is GLShader sh)
+            {
+                currentShader = sh;
+                res.Bind();
+            }
         }
 
 
@@ -36,14 +42,19 @@ namespace LUP.Graphics.OpenGL.Commanding
         }
 
 
-        public override void SetShaderUniform(string name, ValueType value)
+        public override void SetShaderUniform(ShaderUniform uniform, ValueType value)
         {
+            if (currentShader == null)
+                throw new InvalidOperationException("Unable to set uniform without current shader");
+
+            currentShader.SetUniform(uniform, value);
         }
 
 
         public override void UnbindShader()
         {
             GL.UseProgram(0);
+            currentShader = null;
         }
     }
 }

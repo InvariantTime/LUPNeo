@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LUP.Graphics.OpenGL.Resources
 {
+    //TODO: Rewrite textures
     class GLTexture : GLResource
     {
         private readonly int index;
@@ -15,7 +16,15 @@ namespace LUP.Graphics.OpenGL.Resources
         public GLTexture(TextureDescriptor descriptor)
         {
             index = GL.GenTexture();
-       //     GL.BindTexture(,);
+            target = OpenGLConverter.Convert(descriptor.Type);
+
+            GL.BindTexture(target, index);
+            GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, descriptor.Width, descriptor.Height, 0, 
+                PixelFormat.Rgba, PixelType.UnsignedByte, descriptor.Data);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            GL.TexParameter(target, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.BindTexture(target, 0);
         }
 
 
