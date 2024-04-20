@@ -1,7 +1,7 @@
 ﻿using Assimp;
+using LUP.Graphics;
 using LUP.Graphics.Enums;
 using LUP.Math;
-using LUP.Rendering.Meshing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +14,15 @@ namespace LUP.Rendering.Export
 {
     static class AssimpMeshConverter
     {
-        private static readonly VertexDescription description = new(new VertexElement[]
+        ///TODO: descripton must be muttable
+        private static readonly VertexFormat description = new(new VertexAttribute[]
         {
-            new VertexElement(DefaultVertexElements.Position, VertexAttribPointerTypes.Float, 0, 32),
-            new VertexElement(DefaultVertexElements.UV, VertexAttribPointerTypes.Float, 12, 32),
-            new VertexElement(DefaultVertexElements.Normal, VertexAttribPointerTypes.Float, 20, 32),
+            new(DefaultVertexElements.Position, 3, VertexAttribPointerTypes.Float, 32, 0),
+            new(DefaultVertexElements.UV, 2, VertexAttribPointerTypes.Float, 32, 12),
+            new(DefaultVertexElements.Normal, 3, VertexAttribPointerTypes.Float, 32, 20),
         });
 
-        public static RawMesh Convert(AssimpMesh mesh)
+        public static Mesh Convert(AssimpMesh mesh, IGraphicsAllocator allocator)
         {
             Vertex[] vertices = new Vertex[mesh.VertexCount];
             List<uint> indices = new();
@@ -51,20 +52,28 @@ namespace LUP.Rendering.Export
                 }
             }
 
-            var verticesBuffer = new RawVertices
+            var vertexBuffer = allocator.BuildBuffer(new()
             {
-                Description = description,
-                Buffer = RawBuffer.New(vertices, Vertex.Size * vertices.Length)
-            };
+                Data = BufferData.Create(vertices, vertices.Length * Vertex.Size),
+                Type = BufferTypes.Array,
+                Usage = BufferUsages.StaticDraw
+            });
 
-            var indexBuffer = RawBuffer.New(indices.ToArray(), sizeof(uint) * indices.Count);
-
-            return new RawMesh
+            var indexBuffer = allocator.BuildBuffer(new()
             {
-                Vertices = verticesBuffer,
-                Indices = indexBuffer,
-                Count = indices.Count
-            };
+                Data = BufferData.Create(indices.ToArray(), indices.Count * sizeof(uint)),
+                Type = BufferTypes.Element,
+                Usage = BufferUsages.StaticDraw
+            });
+
+            return new Mesh(new VertexBufferBinding(vertexBuffer, description),
+                new(indexBuffer, 0, indices.Count), new DrawData()
+            {
+                Count = indices.Count,
+                First = 0,
+                IsIndixed = true,
+                Primitive = PrimitiveTypes.Triangles
+            });
         }
     }
 

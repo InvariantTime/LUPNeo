@@ -1,26 +1,29 @@
 ﻿using Assimp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AssimpScene = Assimp.Scene;
+using LUP.Graphics;
+using LUP.Rendering.Contexts;
 
 namespace LUP.Rendering.Export
 {
-    public static class ModelImporter
+    public class ModelImporter
     {
-        public static ModelResult Import(string file)
+        private readonly IGraphicsAllocator allocator;
+
+        public ModelImporter(IGraphicsAllocator allocator)
+        {
+            this.allocator = allocator;
+        }
+
+
+        public ModelResult Import(string file)
         {
             using AssimpContext context = new();
             var scene = context.ImportFile(file, PostProcessSteps.Triangulate
                 | PostProcessSteps.CalculateTangentSpace 
                 | PostProcessSteps.FlipUVs | PostProcessSteps.GenerateNormals);
 
-
             return new ModelResult
             {
-                Meshes = scene.Meshes.Select(AssimpMeshConverter.Convert).ToArray()
+                Meshes = scene.Meshes.Select(x => AssimpMeshConverter.Convert(x, allocator)).ToArray()
             };
         }
     }
