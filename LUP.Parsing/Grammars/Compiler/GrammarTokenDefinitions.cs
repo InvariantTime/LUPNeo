@@ -15,21 +15,22 @@ namespace LUP.Parsing.Grammars.Compiler
             new TokenDefinition(GrammarTokens.And, @"\|"),
             new TokenDefinition(GrammarTokens.Colon, @":"),
             new TokenDefinition(GrammarTokens.Start, @"\$"),
-            new TokenDefinition(GrammarTokens.Plus, @"\+"),
             new TokenDefinition(GrammarTokens.Equal, @"="),
-            new TokenDefinition(GrammarTokens.Sharp, @"#"),
             new TokenDefinition(GrammarTokens.LPar, @"\("),
             new TokenDefinition(GrammarTokens.RPar, @"\)"),
             new TokenDefinition(GrammarTokens.Comma, @","),
-            new TokenDefinition(GrammarTokens.Quote, "\""),
             new TokenDefinition(GrammarTokens.LGener, @"<"),
             new TokenDefinition(GrammarTokens.RGener, @">"),
 
+            new TokenDefinition(GrammarTokens.ID, @"(true|false)[a-zA-Z_0-9]"),
+
+            new TokenDefinition(GrammarTokens.False, @"false"),
+            new TokenDefinition(GrammarTokens.True, @"true"),
 
             new TokenDefinition(GrammarTokens.LBlock, @"\{"),
             new TokenDefinition(GrammarTokens.RBlock, @"\}"),
             new TokenDefinition(GrammarTokens.Index, "%"),
-            new TokenDefinition(GrammarTokens.Number, @"[1-9][0-9]*"),
+            new TokenDefinition(GrammarTokens.Number, @"[0-9]+"),
 
             new TokenDefinition(GrammarTokens.None, @"\s"),
             new TokenDefinition(GrammarTokens.None, @"//.*"),
@@ -37,7 +38,7 @@ namespace LUP.Parsing.Grammars.Compiler
             new InvalidTokenDefinition(@"/\\*(.*\\n?)*", "multiline comment must be closed"),
             
             new TokenDefinition(GrammarTokens.ID, @"[a-zA-Z_][a-zA-Z_0-9]*"),
-       //     new TokenDefinition(GrammarTokens.String, @"([^""]+(\s)*)+")
+            new TokenDefinition(GrammarTokens.String, "\"([^\n\"]*)\"", 1)
         };
     }
 }

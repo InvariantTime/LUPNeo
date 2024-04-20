@@ -1,10 +1,4 @@
-﻿using LUP.Parsing.Grammars;
-using LUP.Parsing.Parsers.Reading;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LUP.Parsing.Parsers.Reading;
 
 namespace LUP.Parsing.Parsers
 {

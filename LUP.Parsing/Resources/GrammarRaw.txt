@@ -1,0 +1,38 @@
+//Grammar for grammar language
+
+$GRAMMAR: RULES { %= createGrammar(%1) };
+
+RULES: RULE { %= createList<rule>(%1) }
+| RULES RULE { %= addToList<rule>(%1, %2) };
+
+RULE: ID COLON SEGMENTS SEMN { %= createRule(%1, %3) }
+| START ID COLON SEGMENTS SEMN { %= createStartRule(%2, %4) };
+
+SEGMENTS: SEGMENT { %= createList<ruleSegment>(%1) }
+| SEGMENTS AND SEGMENT { %= addToList<ruleSegment>(%1, %3) };
+
+SEGMENT: TOKENS { %= createRuleExpr(%1) }
+| TOKENS LBLOCK STATEMENT RBLOCK { %= createRuleExpr(%1, %3) }
+| LBLOCK STATEMENT RBLOCK { %= createRuleExpr(%2) }
+| { %= createRuleExpr() };
+
+TOKENS: ID { %= createList<string>(%1) }
+| TOKENS ID { %= addToList<string>(%1, %2) };
+
+STATEMENT: INDEX EQUAL EXPR { %= createEqual(%3) }
+| CALL_EXPR { %= %1 };
+
+EXPR: CALL_EXPR { %= %1 }
+| INDEX NUMBER { %= createIndex(toInt(%2)) }
+| STRING { %= createString(%1) }
+| NUMBER { %= createNumber(toInt(%1)) }
+| TRUE { %= createBool(toBool("true")) }
+| FALSE { %= createBool(toBool("false")) };
+
+CALL_EXPR: ID LPAR ARGS RPAR { %= createCall(%1, %3) }
+| ID LGENER ID RGENER LPAR ARGS RPAR { %= createCall(%1, %3, %6) };
+
+
+ARGS: EXPR { %= createList<param>(%1) }
+| ARGS COMMA EXPR { %= addToList<param>(%1, %3) }
+| { %= createList<param>() };

@@ -36,7 +36,9 @@ namespace LUP.Parsing.Parsers.Reading
 
                 IntReduceValue val => () => WriteInt(val),
 
-                StringReduceValue str => () => WriteString(str),
+                SimpleReduceValue<string> str => () => WriteString(str),
+
+                SimpleReduceValue<bool> bl => () => WriteBool(bl),
 
                 _ => throw new NotSupportedException()
             };
@@ -89,9 +91,16 @@ namespace LUP.Parsing.Parsers.Reading
         }
 
 
-        private void WriteString(StringReduceValue value)
+        private void WriteString(SimpleReduceValue<string> value)
         {
             writer.Write((int)ReduceTypes.String);
+            writer.Write(value.Value);
+        }
+
+
+        private void WriteBool(SimpleReduceValue<bool> value)
+        {
+            writer.Write((int)ReduceTypes.Bool);
             writer.Write(value.Value);
         }
     }

@@ -23,13 +23,11 @@ namespace LUP.Parsing.AST.Expressions
         }
     }
 
-    class StringReduceValue : IReduceValue
+    class SimpleReduceValue<T> : IReduceValue
     {
-        public static readonly StringReduceValue Empty = new("");
+        public T Value { get; }
 
-        public string Value { get; }
-
-        public StringReduceValue(string value)
+        public SimpleReduceValue(T value)
         {
             Value = value;
         }
@@ -43,9 +41,10 @@ namespace LUP.Parsing.AST.Expressions
 
         public IASTExpression ToAST(ReduceContext context)
         {
-            return new ValueExpression<string>(Value);
+            return new ValueExpression<T>(Value);
         }
     }
+
 
     class IntReduceValue : IReduceValue
     {

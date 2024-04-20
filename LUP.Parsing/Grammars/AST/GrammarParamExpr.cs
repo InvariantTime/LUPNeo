@@ -1,4 +1,5 @@
-﻿using LUP.Parsing.AST.Expressions;
+﻿using LUP.Parsing.AST;
+using LUP.Parsing.AST.Expressions;
 using System.Collections.Immutable;
 
 namespace LUP.Parsing.Grammars.AST
@@ -87,6 +88,8 @@ namespace LUP.Parsing.Grammars.AST
 
     class GrammarStringExpr : IGrammarParamExpr
     {
+        public static readonly SimpleReduceValue<string> Empty = new(string.Empty);
+
         public string Value { get; }
 
         public GrammarStringExpr(string value)
@@ -98,9 +101,25 @@ namespace LUP.Parsing.Grammars.AST
         public IReduceExpression ToReduceExpression()
         {
             if (string.IsNullOrEmpty(Value) == true)
-                return StringReduceValue.Empty;
+                return Empty;
 
-            return new StringReduceValue(Value);
+            return new SimpleReduceValue<string>(Value);
+        }
+    }
+
+    class GrammarBoolExpr : IGrammarParamExpr
+    {
+        public bool Value { get; }
+
+        public GrammarBoolExpr(bool value)
+        {
+            Value = value;
+        }
+
+
+        public IReduceExpression ToReduceExpression()
+        {
+            return new SimpleReduceValue<bool>(Value);
         }
     }
 }

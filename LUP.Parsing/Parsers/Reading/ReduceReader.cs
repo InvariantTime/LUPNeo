@@ -1,4 +1,5 @@
 ﻿using LUP.Parsing.AST.Expressions;
+using LUP.Parsing.Grammars.AST;
 
 namespace LUP.Parsing.Parsers.Reading
 {
@@ -36,6 +37,8 @@ namespace LUP.Parsing.Parsers.Reading
                 ReduceTypes.Index => () => BuildInt(IntReduceValue.ValueTypes.Index),
 
                 ReduceTypes.String => BuildString,
+
+                ReduceTypes.Bool => BuildBool,
 
                 _ => throw new NotSupportedException()
             };
@@ -78,14 +81,21 @@ namespace LUP.Parsing.Parsers.Reading
         }
 
 
-        private StringReduceValue BuildString()
+        private SimpleReduceValue<string> BuildString()
         {
-            string value = reader.ReadString();
+            var value = reader.ReadString();
 
             if (string.IsNullOrEmpty(value) == true)
-                return StringReduceValue.Empty;
+                return GrammarStringExpr.Empty;
 
-            return new StringReduceValue(value);
+            return new SimpleReduceValue<string>(value);
+        }
+
+
+        private SimpleReduceValue<bool> BuildBool()
+        {
+            var value = reader.ReadBoolean();
+            return new SimpleReduceValue<bool>(value);
         }
     }
 
@@ -101,6 +111,8 @@ namespace LUP.Parsing.Parsers.Reading
 
         Index = 4,
 
-        String = 5
+        String = 5,
+
+        Bool = 6
     }
 }

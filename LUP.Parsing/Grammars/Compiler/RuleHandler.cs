@@ -1,10 +1,7 @@
-﻿using LUP.Parsing.AST;
+﻿#pragma warning disable CA1822
+
+using LUP.Parsing.AST;
 using LUP.Parsing.Grammars.AST;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LUP.Parsing.Grammars.Compiler
 {

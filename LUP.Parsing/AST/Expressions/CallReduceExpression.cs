@@ -65,7 +65,9 @@ namespace LUP.Parsing.AST.Expressions
 
                 ValueExpression<int> num => new IntReduceValue(num.Value, IntReduceValue.ValueTypes.Int),
 
-                ValueExpression<string> str => new StringReduceValue(str.Value),
+                ValueExpression<string> str => new SimpleReduceValue<string>(str.Value),
+
+                ValueExpression<bool> bl => new SimpleReduceValue<bool>(bl.Value),
 
                 _ => new ASTReduceValue(expression)
             };

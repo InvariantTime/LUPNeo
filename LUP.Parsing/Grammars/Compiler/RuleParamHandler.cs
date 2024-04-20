@@ -54,5 +54,12 @@ namespace LUP.Parsing.Grammars.Compiler
         {
             return new GrammarStringExpr(str);
         }
+
+
+        [GrammarCall("createBool")]
+        public IGrammarParamExpr CreateBool(bool value)
+        {
+            return new GrammarBoolExpr(value);
+        }
     }
 }

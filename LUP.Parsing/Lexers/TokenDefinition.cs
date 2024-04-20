@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace LUP.Parsing.Lexers
 {
@@ -11,10 +6,13 @@ namespace LUP.Parsing.Lexers
     {
         private readonly Regex regex;
         private readonly string token;
+        private readonly uint index;
 
-        public TokenDefinition(string token, string regexPattern)
+        public TokenDefinition(string token, string regexPattern, uint index = 0)
         {
             this.token = token ?? throw new ArgumentNullException(token);
+            this.index = index;
+
             regex = new($"^{regexPattern}");
         }
 
@@ -30,10 +28,13 @@ namespace LUP.Parsing.Lexers
                 if (match.Value.Length != source.Length)
                     remaining = source[match.Length..];
 
+                string value = index == 0 ? match.Value 
+                    : match.Groups[(int)index].Value;
+
                 return new TokenMatch
                 {
                     IsMatch = true,
-                    Value = match.Value,
+                    Value = value,
                     Token = token,
                     RemainingText = remaining
                 };
