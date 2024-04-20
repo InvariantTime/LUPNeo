@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LUP.Rendering.Base\LUP.Rendering.Base.csproj" />
+    <ProjectReference Include="..\LUP.Rendering.Effects\LUP.Rendering.Effects.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Shaders\ShaderResources.Designer.cs">
+      <DependentUpon>ShaderResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Shaders\ShaderResources.resx">
+      <LastGenOutput>ShaderResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
