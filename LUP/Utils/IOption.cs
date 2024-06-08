@@ -1,4 +1,4 @@
-﻿namespace LUP
+﻿namespace LUP.Utils
 {
     public interface IOption<T> where T : new()
     {

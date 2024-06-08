@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 
-namespace LUP
+namespace LUP.Utils
 {
     public static class PinnedBuffer
     {
