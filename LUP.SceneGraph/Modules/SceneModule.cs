@@ -1,14 +1,11 @@
-﻿namespace LUP.SceneGraph.Modules
+﻿using LUP.SceneGraph.Builders;
+
+namespace LUP.SceneGraph.Modules
 {
-    public abstract class SceneModule : DisposableObject
+    public abstract class SceneModule : ISceneModule
     {
-        public int UpdatePerSecond { get; protected set; } = 0;
-
-
-        //TODO: scehduling
-        public virtual void Update()
+        public virtual void ConfigurePipeline(IComponentPipelineBuilder builder)
         {
-
         }
     }
 }

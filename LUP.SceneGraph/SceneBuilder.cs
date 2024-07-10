@@ -1,33 +1,40 @@
-﻿using LUP.DependencyInjection;
-using LUP.SceneGraph.Descriptors;
+﻿using LUP.SceneGraph.Builders;
+using LUP.SceneGraph.Implementation;
+using LUP.SceneGraph.Scenes;
 
 namespace LUP.SceneGraph
 {
+    public delegate void SceneStartupDelegate(IComponentPipelineBuilder builder);
+
     public class SceneBuilder : ISceneBuilder
     {
-        private readonly IScopeFactory factory;
+        private static readonly SceneStartupDelegate _emptyStartup = (_) => { };
 
-        public SceneBuilder(IScopeFactory factory)
+        private readonly ISceneModuleFactory _factory;
+        private readonly SceneStartupDelegate _startup;
+
+        public SceneBuilder(ISceneModuleFactory factory)
+            : this(factory, _emptyStartup)
         {
-            this.factory = factory;
         }
 
-        public SceneProvider BuildScene(ISceneDescriptor? descriptor)
+        public SceneBuilder(ISceneModuleFactory factory, SceneStartupDelegate startup)
         {
-            var scope = factory.CreateScope();
+            _factory = factory;
+            _startup = startup;
+        }
 
-            if (scope == null)
-                throw new InvalidOperationException("Unable to create scope");
+        public IScene Build()
+        {
+            var builder = new ComponentPipelineBuilder();
+            _startup.Invoke(builder);
 
-            var scene = scope.GetService<IScene>();
+            var modules = _factory.Build(builder);
+            var pipeline = builder.Build();
 
-            if (scene == null)
-                throw new InvalidOperationException("Unable to create scene");
+            var collection = new SceneCollection(pipeline);
 
-            if (descriptor != null)
-                descriptor.Visit(scene);
-
-            return new SceneProvider(scope, scene);
+            return new Scene(collection, modules);
         }
     }
 }

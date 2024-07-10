@@ -1,24 +1,22 @@
-﻿using LUP.SceneGraph.Components;
+﻿using LUP.SceneGraph.Objects;
 
 namespace LUP.SceneGraph
 {
     public static class SceneObjectExtensions
     {
-        public static T? GetComponent<T>(this SceneObject @object) where T : ComponentBase
+        public static bool IsChildOf(this SceneObject @object, SceneObject other)
         {
-            return (T?)@object.Components.FirstOrDefault(x => x is T);
+            return @object.Transform.Parent == other.Transform;
         }
 
-
-        public static bool RemoveComponent(this SceneObject @object, ComponentBase component)
+        public static void AddChild(this SceneObject @object, SceneObject other)
         {
-            return @object.Components.RemoveComponent(component);
+            other.Transform.BindParent(@object.Transform);
         }
 
-
-        public static bool AddComponent(this SceneObject @object, ComponentBase component)
+        public static void BindParent(this SceneObject @object, SceneObject other)
         {
-            return @object.Components.AddComponent(component);
+            @object.Transform.BindParent(other.Transform);
         }
     }
 }

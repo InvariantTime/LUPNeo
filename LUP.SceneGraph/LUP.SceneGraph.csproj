@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LUP.App\LUP.App.csproj" />
     <ProjectReference Include="..\LUP.DependencyInjection\LUP.DependencyInjection.csproj" />
     <ProjectReference Include="..\LUP.Math\LUP.Math.csproj" />
     <ProjectReference Include="..\LUP\LUP.csproj" />
